@@ -51,5 +51,5 @@ mongoose
     });
   })
   .catch((err) => {
-    console.log(err);
+    console.log(err, "err");
   });
