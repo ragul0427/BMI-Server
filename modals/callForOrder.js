@@ -11,7 +11,7 @@ const callOrderSchema = mongoose.Schema(
       required: true,
     },
     mobileNumber: {
-      type: String,
+      type: Number,
       required: true,
     },
     location: {
