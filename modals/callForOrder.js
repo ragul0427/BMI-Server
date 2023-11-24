@@ -17,6 +17,11 @@ const callOrderSchema = mongoose.Schema(
     inventory: {
       type: Array,
     },
+    deliveryStatus:{
+      type:String,
+      required:true,
+    },
+    
     location: {
       type: String,
       required: true,
