@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { getUser, getAllUsers } = require("../controllers/userController");
+const { getUser, getAllUsers, careteSignUp, getOneUserdata, makeUserToken,checkTokenStatus,makeLogoutUser } = require("../controllers/userController");
 const authenticateUserToken = require("../middleWare/clientUserAuthenticate");
+const { webTokenMiddleware } = require("../middleWare/webMiddleware");
 
 router
   .get("/getalluser", getAllUsers)
@@ -9,5 +10,12 @@ router
   .get("/validateUserToken", authenticateUserToken, (req, res) => {
     res.status(200).send(req.user);
   });
+
+  // web routes
+router.post("/signup",careteSignUp);
+router.get("/get_one_user/:number",getOneUserdata);
+router.post("/make_user_auth",makeUserToken);
+router.get("/check_header_status",webTokenMiddleware,checkTokenStatus);
+router.post("/make_logout_user",webTokenMiddleware,makeLogoutUser);
 
 module.exports = router;
