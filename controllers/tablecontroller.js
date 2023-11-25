@@ -39,4 +39,19 @@ const deleteTable = async (req, res) => {
   }
 };
 
-module.exports = { createTable, deleteTable, getTable, updateTable };
+const getAllTables = async (req, res) => {
+  try {
+    const result = await Table.find({});
+    return res.status(200).send({ data: result });
+  } catch (err) {
+    return res.status(500).send("Something went wrong while deleting table");
+  }
+};
+
+module.exports = {
+  createTable,
+  deleteTable,
+  getTable,
+  updateTable,
+  getAllTables,
+};
