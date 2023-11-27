@@ -1,4 +1,4 @@
-const { isEmpty } = require("lodash");
+const { isEmpty, get } = require("lodash");
 const category = require("../modals/categoryModal");
 const subCategory = require("../modals/subCategoryModal");
 const Product = require("../modals/productModal");
@@ -46,7 +46,7 @@ const deleteCategory = async (req, res) => {
 // web
 const getAllCusines = async (req, res) => {
   try {
-    const result = await category.find({status:true});
+    const result = await category.find({ status: true });
     return res.status(200).send({ data: result });
   } catch (e) {
     return res.status(500).send("Something went wrong while deleting category");
@@ -55,11 +55,21 @@ const getAllCusines = async (req, res) => {
 
 const getAllCusinessFilter = async (req, res) => {
   try {
-    const result = await category.find({status:true});
-    const subcategory = await subCategory.find({ categoryId: req.params.id,status:true });
+    const result = await category.find({ status: true });
+    let target_id;
+    if (req.params.id === "empty") {
+      target_id = get(result, "[0]._id", "");
+    } else {
+      target_id = req.params.id;
+    }
+    const subcategory = await subCategory.find({
+      categoryId: target_id,
+      status: true,
+    });
     let resultData = { categoryData: result, subCategoryData: subcategory };
     return res.status(200).send({ data: resultData });
-  } catch (e) {
+  } catch (err) {
+    console.log(err);
     return res.status(500).send("Something went wrong while deleting category");
   }
 };
