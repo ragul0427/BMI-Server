@@ -64,6 +64,7 @@ const bookMyTable = async (req, res) => {
       message: "Your table reservation has been successfully confirmed.",
     });
   } catch (err) {
+    console.log(err)
     return res.status(500).send("Something went wrong");
   }
 };
