@@ -29,6 +29,10 @@ const tableBookingSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    pickupAddress: {
+      type: String,
+      required: true,
+    },
     pickupOption: {
       type: String,
       required: true,
@@ -42,6 +46,9 @@ const tableBookingSchema = mongoose.Schema(
       required: true,
     },
     booking: {
+      type: String,
+    },
+    tablePic: {
       type: String,
     },
   },
