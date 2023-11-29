@@ -3,6 +3,7 @@ const {
   addtocart,
   getCurrentUserCarts,
   getCurrentUserCartProducts,
+  removeFromCart,
 } = require("../controllers/cart.controller.js");
 const { webTokenMiddleware } = require("../middleWare/webMiddleware.js");
 
@@ -18,5 +19,6 @@ router.get(
   webTokenMiddleware,
   getCurrentUserCartProducts
 );
+router.delete("/remove_from_cart/:id", webTokenMiddleware, removeFromCart);
 
 module.exports = router;

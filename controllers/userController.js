@@ -89,10 +89,12 @@ const makeUserToken = async (req, res) => {
 
 const checkTokenStatus = async (req, res) => {
   try {
+
     let clientdata = {
       username: _.get(req, "body.userDetails.user", ""),
+      phonenumber: _.get(req, "body.userDetails.phoneNumber", ""),
     };
-
+ 
     return res.status(200).send({ data: clientdata });
   } catch (err) {
     console.log(err);

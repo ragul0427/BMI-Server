@@ -62,4 +62,26 @@ const getCurrentUserCartProducts = async (req, res) => {
   }
 };
 
-module.exports = { addtocart, getCurrentUserCarts, getCurrentUserCartProducts };
+const removeFromCart = async (req, res) => {
+  try {
+    const { orderRef, ptoductRef } = JSON.parse(req.params.id);
+
+    let where = {
+      userRef: _.get(req, "body.userDetails._id", ""),
+      productRef: ptoductRef,
+      orderRef: orderRef,
+    };
+
+    await Cart.deleteOne(where);
+    return res.status(200).send({ message: "Success" });
+  } catch (err) {
+    return res.status(500).send({ message: "Something went wrong" });
+  }
+};
+
+module.exports = {
+  addtocart,
+  getCurrentUserCarts,
+  getCurrentUserCartProducts,
+  removeFromCart,
+};
