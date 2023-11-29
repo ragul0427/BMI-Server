@@ -10,6 +10,7 @@ const addDeliveryAddress = async (req, res) => {
       city: _.get(req, "body.city"),
       picCode: _.get(req, "body.picCode"),
       customerState: _.get(req, "body.customerState"),
+      mobileNumber: _.get(req, "body.mobileNumber"),
       userId: _.get(req, "body.userDetails._id"),
     };
     await Delivery.create(formData);

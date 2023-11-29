@@ -22,11 +22,13 @@ const cartRoutes = require("./routes/cart.routes.js");
 const deliveryRoutes = require("./routes/delivery.routes.js");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const morgan = require("morgan");
 const mongoose = require("mongoose");
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(morgan("tiny"));
 app.use("/", adminrouter);
 app.use("/", deliveryRoutes);
 app.use("/", cartRoutes);

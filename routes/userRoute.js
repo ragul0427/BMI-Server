@@ -9,7 +9,7 @@ router
   .post("/createuser", getUser)
   .get("/validateUserToken", authenticateUserToken, (req, res) => {
     res.status(200).send(req.user);
-  });
+});
 
   // web routes
 router.post("/signup",careteSignUp);

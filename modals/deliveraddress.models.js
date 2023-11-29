@@ -23,6 +23,9 @@ const deliveryAddressSchema = mongoose.Schema(
     userId: {
       type: String,
     },
+    mobileNumber: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

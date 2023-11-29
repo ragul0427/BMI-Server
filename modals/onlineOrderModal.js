@@ -6,12 +6,8 @@ const onlineOrderSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    orderId: {
-      type: String,
-      required: true,
-    },
     orderedFood: {
-      type: String,
+      type: Array,
       required: true,
     },
     customerName: {
@@ -30,7 +26,6 @@ const onlineOrderSchema = mongoose.Schema(
     },
     location: {
       type: String,
-      required: true,
     },
     billAmount: {
       type: String,
@@ -40,6 +35,24 @@ const onlineOrderSchema = mongoose.Schema(
       type: String,
       default: "Order placed",
       required: true,
+    },
+    gst: {
+      type: Number,
+    },
+    delivery_charge: {
+      type: Number,
+    },
+    packing_charge: {
+      type: Number,
+    },
+    transaction_charge: {
+      type: Number,
+    },
+    coupon_amount: {
+      type: Number,
+    },
+    item_price: {
+      type: Number,
     },
   },
   { timestamps: true }
