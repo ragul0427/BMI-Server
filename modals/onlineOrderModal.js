@@ -22,13 +22,7 @@ const onlineOrderSchema = mongoose.Schema(
       type: String,
     },
     inventory: {
-      type: String,
-    },
-    category: {
-      type: String,
-    },
-    quantity: {
-      type: String,
+      type: Array,
     },
     location: {
       type: String,

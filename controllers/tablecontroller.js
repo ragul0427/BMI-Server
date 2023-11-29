@@ -11,7 +11,7 @@ const createTable = async (req, res) => {
 
 const getTable = async (req, res) => {
   try {
-    const result = await Table.find({});
+    const result = await Table.find({}).sort({ tableNo: 1 });
     return res.status(200).send({ data: result });
   } catch (e) {
     return res.status(500).send("Something went wrong while fetching table");

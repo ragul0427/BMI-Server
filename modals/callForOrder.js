@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const callOrderSchema = mongoose.Schema(
   {
     orderedFood: {
-      type: String,
+      type: Array,
       required: true,
     },
     customerName: {
@@ -14,6 +14,14 @@ const callOrderSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
+    inventory: {
+      type: Array,
+    },
+    deliveryStatus:{
+      type:String,
+      required:true,
+    },
+    
     location: {
       type: String,
       required: true,
@@ -22,14 +30,9 @@ const callOrderSchema = mongoose.Schema(
       type: String,
     },
     inventory: {
-      type: String,
+      type: Array,
     },
-    category: {
-      type: String,
-    },
-    quantity: {
-      type: String,
-    },
+
     billAmount: {
       type: String,
       required: true,

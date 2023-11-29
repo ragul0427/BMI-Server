@@ -13,7 +13,7 @@ const createCallOrder = async (req, res) => {
 
 const getCallOrder = async (req, res) => {
   try {
-    const result = await callForOrder.find({});
+    const result = await callForOrder.find({}).sort({ createdAt: -1 });
     return res.status(200).send({ data: result });
   } catch (err) {
     return res
@@ -24,8 +24,11 @@ const getCallOrder = async (req, res) => {
 
 const updateCallOrder = async (req, res) => {
   const { id } = req.params;
+  console.log(req.body, id, "wejb");
   try {
-    const result = await callForOrder.findByIdAndUpdate(id, { ...req.body });
+    const result = await callForOrder.findByIdAndUpdate(id, {
+      ...req.body,
+    });
     return res.status(200).send({ data: result });
   } catch (e) {
     return res
