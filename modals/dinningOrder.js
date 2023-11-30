@@ -22,7 +22,7 @@ const dinningOrderSchema = mongoose.Schema(
       type: String,
     },
     orderedFood: {
-      type: String,
+      type: Array,
       required: true,
     },
     customerName: {
@@ -37,6 +37,9 @@ const dinningOrderSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    billAmount: Number,
+    gst: Number,
+    item_price: Number,
     status: {
       type: String,
       default: "Order placed",

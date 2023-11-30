@@ -64,7 +64,7 @@ const bookMyTable = async (req, res) => {
       message: "Your table reservation has been successfully confirmed.",
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return res.status(500).send("Something went wrong");
   }
 };
@@ -73,10 +73,44 @@ const getAllBookedTables = async (req, res) => {
   try {
     const result = await tableBooking.find({
       userId: _.get(req, "body.userDetails._id", ""),
+      booking:{  $ne: "Canceled" , $ne: "Checkout" },
     });
     return res.status(200).send({ data: result });
-  } catch (e) {
+  } catch (err) {
+    console.log(err);
     return res.status(500).send("Something went wrong");
+  }
+};
+
+const cancelBooking = async (req, res) => {
+  try {
+    await tableBooking.findByIdAndUpdate(
+      { _id: _.get(req, "body.booking_id", "") },
+      { booking: "Canceled" }
+    );
+    await Table.findByIdAndUpdate(
+      { _id: _.get(req, "body.table_id", "") },
+      { status: false }
+    );
+    return res.status(200).send({ message: "Success" });
+  } catch (err) {
+    return res
+      .status(500)
+      .send("Something went wrong while updating tableBooking");
+  }
+};
+
+const checkInBooking = async (req, res) => {
+  try {
+    await tableBooking.findByIdAndUpdate(
+      { _id: _.get(req, "body.booking_id", "") },
+      { booking: "CheckIn" }
+    );
+    return res.status(200).send({ message: "Success" });
+  } catch (err) {
+    return res
+      .status(500)
+      .send("Something went wrong while updating tableBooking");
   }
 };
 
@@ -86,4 +120,6 @@ module.exports = {
   updateTableBooking,
   bookMyTable,
   getAllBookedTables,
+  cancelBooking,
+  checkInBooking,
 };
