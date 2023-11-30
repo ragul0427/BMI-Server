@@ -8,6 +8,7 @@ const addtocart = async (req, res) => {
       userRef: _.get(req, "body.userDetails._id", ""),
       productRef: _.get(req, "body.productRef", ""),
       orderRef: _.get(req, "body.orderRef", ""),
+      bookingRef: _.get(req, "body.bookingRef", ""),
     };
 
     await Cart.create(formData);
@@ -64,13 +65,16 @@ const getCurrentUserCartProducts = async (req, res) => {
 
 const removeFromCart = async (req, res) => {
   try {
-    const { orderRef, ptoductRef } = JSON.parse(req.params.id);
-
+    const { orderRef, ptoductRef, bookingRef } = JSON.parse(req.params.id);
     let where = {
       userRef: _.get(req, "body.userDetails._id", ""),
       productRef: ptoductRef,
       orderRef: orderRef,
     };
+
+    if (bookingRef) {
+      where.bookingRef = bookingRef;
+    }
 
     await Cart.deleteOne(where);
     return res.status(200).send({ message: "Success" });

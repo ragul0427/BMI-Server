@@ -10,6 +10,10 @@ const takeAwaySchema = mongoose.Schema(
       type: Array,
       required: true,
     },
+    orderId: {
+      type: String,
+      required: true,
+    },
     customerName: {
       type: String,
       required: true,

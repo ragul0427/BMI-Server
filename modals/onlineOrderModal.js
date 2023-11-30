@@ -51,6 +51,10 @@ const onlineOrderSchema = mongoose.Schema(
     coupon_amount: {
       type: Number,
     },
+    orderId: {
+      type: String,
+      required: true,
+    },
     item_price: {
       type: Number,
     },

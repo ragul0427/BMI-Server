@@ -48,7 +48,8 @@ const addTakeAwayOrder = async (req, res) => {
       coupon_amount: _.get(req, "body.coupon_amount", ""),
       item_price: _.get(req, "body.item_price", ""),
       userId: _.get(req, "body.userDetails._id", ""),
-      orderedFood: _.get(req, "body.userDetails.orderedFood", ""),
+      orderedFood: _.get(req, "body.orderedFood", ""),
+      orderId: _.get(req, "body.orderId", ""),
     };
     const result = await takeAway.create(formData);
     return res.status(200).send({ message: "success" });
