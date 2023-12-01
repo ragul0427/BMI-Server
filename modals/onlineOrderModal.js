@@ -25,7 +25,7 @@ const onlineOrderSchema = mongoose.Schema(
       type: Array,
     },
     location: {
-      type: String,
+      type: Array,
     },
     billAmount: {
       type: String,
