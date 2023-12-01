@@ -15,8 +15,8 @@ const createTakeAwayOrder = async (req, res) => {
 
 const getTakeAwayOrder = async (req, res) => {
   try {
-    const result = await takeAway.find({});
-    return res.status(200).send({ data: result }).sort({ createdAt: -1 });
+    const result = await takeAway.find({}).sort({ createdAt: -1 });
+    return res.status(200).send({ data: result });
   } catch (err) {
     return res
       .status(500)
