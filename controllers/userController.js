@@ -74,12 +74,10 @@ const makeUserToken = async (req, res) => {
     const result = await User.find({ phoneNumber: `${req.body.number}` });
     let tokenConstraints = {
       id: _.get(result, "[0]._id", ""),
+      phonenumber: _.get(result, "[0].phoneNumber", ""),
+      username: _.get(result, "[0].user", ""),
     };
     const token = jwt.sign(tokenConstraints, process.env.SECRET_KEY, {});
-    await User.findByIdAndUpdate(
-      { _id: _.get(result, "[0]._id", "") },
-      { tokenRef: token }
-    );
     res.status(200).send({ data: token, message: "Start Your Journey" });
   } catch (err) {
     console.log(err);
@@ -89,12 +87,11 @@ const makeUserToken = async (req, res) => {
 
 const checkTokenStatus = async (req, res) => {
   try {
-
     let clientdata = {
       username: _.get(req, "body.userDetails.user", ""),
       phonenumber: _.get(req, "body.userDetails.phoneNumber", ""),
     };
- 
+
     return res.status(200).send({ data: clientdata });
   } catch (err) {
     console.log(err);
