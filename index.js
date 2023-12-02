@@ -20,6 +20,7 @@ const callForOrder = require("./routes/callForOrder");
 const takeAway = require("./routes/takeAwayRoute");
 const cartRoutes = require("./routes/cart.routes.js");
 const deliveryRoutes = require("./routes/delivery.routes.js");
+const notificationRoutes = require("./routes/notificationRoute.js");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -48,6 +49,7 @@ app.use("/", onlineOrder);
 app.use("/", dinningOrder);
 app.use("/", callForOrder);
 app.use("/", takeAway);
+app.use("/", notificationRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI, {})
