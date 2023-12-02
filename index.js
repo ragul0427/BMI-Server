@@ -21,6 +21,7 @@ const takeAway = require("./routes/takeAwayRoute");
 const cartRoutes = require("./routes/cart.routes.js");
 const deliveryRoutes = require("./routes/delivery.routes.js");
 const notificationRoutes = require("./routes/notificationRoute.js");
+const profileRoutes = require("./routes/profile.routes.js");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -31,6 +32,7 @@ app.use(cookieParser());
 app.use(cors());
 app.use(morgan("tiny"));
 app.use("/", adminrouter);
+app.use("/", profileRoutes);
 app.use("/", deliveryRoutes);
 app.use("/", cartRoutes);
 app.use("/", categoryRouter);
@@ -59,5 +61,5 @@ mongoose
     });
   })
   .catch((err) => {
-    console.log(err, "err");
+    console.log(err, "error");
 });

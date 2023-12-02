@@ -1,4 +1,5 @@
 const onlineOrder = require("../modals/onlineOrderModal");
+const Cart = require("../modals/cart.models");
 const _ = require("lodash");
 
 const createOnlineOrder = async (req, res) => {
@@ -51,8 +52,14 @@ const addOnlineOrder = async (req, res) => {
       userId: _.get(req, "body.userDetails._id", ""),
       orderedFood: _.get(req, "body.orderedFood", ""),
       orderId: _.get(req, "body.orderId", ""),
+      location: _.get(req, "body.location", ""),
     };
     const result = await onlineOrder.create(formData);
+    let where = {
+      userRef: _.get(req, "body.userDetails._id", ""),
+      orderRef: "online_order",
+    };
+    await Cart.deleteMany(where);
     return res.status(200).send({ message: "success" });
   } catch (err) {
     console.log(err);

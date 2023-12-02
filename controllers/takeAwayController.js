@@ -1,4 +1,5 @@
 const takeAway = require("../modals/takeAwayModal");
+const Cart = require("../modals/cart.models");
 const _ = require("lodash");
 
 const createTakeAwayOrder = async (req, res) => {
@@ -14,7 +15,7 @@ const createTakeAwayOrder = async (req, res) => {
 
 const getTakeAwayOrder = async (req, res) => {
   try {
-    const result = await takeAway.find({});
+    const result = await takeAway.find({}).sort({ createdAt: -1 });
     return res.status(200).send({ data: result });
   } catch (err) {
     return res
@@ -52,6 +53,11 @@ const addTakeAwayOrder = async (req, res) => {
       orderId: _.get(req, "body.orderId", ""),
     };
     const result = await takeAway.create(formData);
+    let where = {
+      userRef: _.get(req, "body.userDetails._id", ""),
+      orderRef: "takeaway_order",
+    };
+    await Cart.deleteMany(where);
     return res.status(200).send({ message: "success" });
   } catch (err) {
     console.log(err);

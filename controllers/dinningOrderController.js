@@ -17,7 +17,7 @@ const createDinningOrder = async (req, res) => {
 
 const getDinningOrder = async (req, res) => {
   try {
-    const result = await dinning.find({});
+    const result = await dinning.find({}).sort({ createdAt: -1 });
     return res.status(200).send({ data: result });
   } catch (err) {
     return res
@@ -66,9 +66,11 @@ const addDiningOrder = async (req, res) => {
 
 const getDiningOrder = async (req, res) => {
   try {
-    const result = await dinning.find({
-      userId: _.get(req, "body.userDetails._id", ""),
-    });
+    const result = await dinning
+      .find({
+        userId: _.get(req, "body.userDetails._id", ""),
+      })
+      .sort({ createdAt: -1 });
     return res.status(200).send({ data: result });
   } catch (err) {
     return res
@@ -103,11 +105,8 @@ const updateBoockings = async (req, res) => {
       { _id: _.get(req, "body.table_id", "") },
       { status: false }
     );
-    return res
-    .status(200)
-    .send("success");
+    return res.status(200).send("success");
   } catch (err) {
-
     return res
       .status(500)
       .send("Something went wrong while fetching dinning order");
