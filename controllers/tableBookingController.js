@@ -73,7 +73,7 @@ const getAllBookedTables = async (req, res) => {
   try {
     const result = await tableBooking.find({
       userId: _.get(req, "body.userDetails._id", ""),
-      booking:{  $ne: "Canceled" , $ne: "Checkout" },
+      booking:{  $ne: "Canceled" },
     });
     return res.status(200).send({ data: result });
   } catch (err) {
