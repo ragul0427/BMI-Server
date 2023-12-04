@@ -22,6 +22,7 @@ const cartRoutes = require("./routes/cart.routes.js");
 const deliveryRoutes = require("./routes/delivery.routes.js");
 const notificationRoutes = require("./routes/notificationRoute.js");
 const profileRoutes = require("./routes/profile.routes.js");
+const scratchRoute = require("./routes/scratchRoute.js");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -52,6 +53,7 @@ app.use("/", dinningOrder);
 app.use("/", callForOrder);
 app.use("/", takeAway);
 app.use("/", notificationRoutes);
+app.use("/", scratchRoute);
 
 mongoose
   .connect(process.env.MONGO_URI, {})
