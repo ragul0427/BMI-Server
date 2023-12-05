@@ -1,14 +1,21 @@
-const mongoose=require("mongoose")
+const mongoose = require("mongoose");
 
-const scratchSchema=mongoose.Schema({
-    number:{
-        type:String,
-        required:true
-    },
-    status:{
-        type:Boolean,
-        default:false,
-    }
-})
+const scratchSchema = mongoose.Schema({
+  number: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: Boolean,
+    default: false,
+  },
+  expired: {
+    type: Boolean,
+    default: false,
+  },
+  order_id: String,
+  contact_number: Number,
+  userId: String,
+});
 
-module.exports=mongoose.model("scratchCard",scratchSchema)
+module.exports = mongoose.model("scratchCard", scratchSchema);
