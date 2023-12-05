@@ -47,7 +47,6 @@ const addMyfeedback = async (req, res) => {
 
 const getMyfeedback = async (req, res) => {
   try {
-
     const result = await feedback.find({
       mobileNumber: _.get(req, "body.userDetails.phoneNumber", ""),
     });
@@ -59,6 +58,15 @@ const getMyfeedback = async (req, res) => {
   }
 };
 
+const getAllfeedback = async (req, res) => {
+  try {
+    const result = await feedback.find({ options: "yes" });
+    return res.status(200).send({ data: result });
+  } catch (e) {
+    return res.status(500).send("Something went wrong");
+  }
+};
+
 module.exports = {
   createFeedback,
   updateFeedback,
@@ -66,4 +74,5 @@ module.exports = {
   getFeedback,
   addMyfeedback,
   getMyfeedback,
+  getAllfeedback,
 };
