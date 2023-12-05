@@ -19,7 +19,7 @@ const createScratch = async (req, res) => {
 const getScratch = async (req, res) => {
   try {
     const { search } = req.query;
-    console.log(search, "ajsn");
+    
 
     if (search === "all") {
       const result = await Scratch.find({});
