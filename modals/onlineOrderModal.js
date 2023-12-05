@@ -21,6 +21,9 @@ const onlineOrderSchema = mongoose.Schema(
     timeSlot: {
       type: String,
     },
+    timePicked: {
+      type: String,
+    },
     inventory: {
       type: Array,
     },

@@ -21,12 +21,14 @@ const callOrderSchema = mongoose.Schema(
       type:String,
       required:true,
     },
-    
     location: {
       type: String,
       required: true,
     },
     timeSlot: {
+      type: String,
+    },
+    timePicked: {
       type: String,
     },
     inventory: {
