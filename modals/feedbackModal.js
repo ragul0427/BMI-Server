@@ -22,6 +22,7 @@ const feedbackSchema = mongoose.Schema(
       type: String,
     },
     options: {
+      default: "no",
       type: String,
     },
   },
