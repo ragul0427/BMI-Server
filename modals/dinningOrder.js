@@ -21,6 +21,9 @@ const dinningOrderSchema = mongoose.Schema(
     timeSlot: {
       type: String,
     },
+    timePicked: {
+      type: String,
+    },
     orderedFood: {
       type: Array,
       required: true,

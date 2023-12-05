@@ -51,10 +51,7 @@ const tableBookingSchema = mongoose.Schema(
     tablePic: {
       type: String,
     },
-    status: {
-      type: Boolean,
-      default: false,
-    }
+    
   },
   { timestamps: true }
 );
