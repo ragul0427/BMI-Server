@@ -36,10 +36,17 @@ const getCurrentUserCarts = async (req, res) => {
 
 const getCurrentUserCartProducts = async (req, res) => {
   try {
+    const { order_ref, bookingref } = JSON.parse(req.params.id);
+
     let where = {
       userRef: _.get(req, "body.userDetails._id", ""),
-      orderRef: _.get(req, "params.id", ""),
+      orderRef: order_ref,
     };
+
+    if (bookingref) {
+      where.bookingRef = bookingref;
+    }
+
     const collect_current_user_carts = await Cart.find(where, {
       userRef: 0,
       orderRef: 0,
@@ -56,6 +63,7 @@ const getCurrentUserCartProducts = async (req, res) => {
           $in: prodct_ids,
         },
       });
+
       return res.status(200).send({ data: getSelectiveProducts });
     }
   } catch (err) {
