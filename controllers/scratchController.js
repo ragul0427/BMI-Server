@@ -20,8 +20,6 @@ const createScratch = async (req, res) => {
 const getScratch = async (req, res) => {
   try {
     const { search } = req.query;
-    
-
     if (search === "all") {
       const result = await Scratch.find({});
       return res.status(200).send({ data: result });
