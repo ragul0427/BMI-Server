@@ -50,8 +50,8 @@ const careteSignUp = async (req, res) => {
         .status(500)
         .send({ message: "This phone number has already been used." });
     }
-    await User.create(req.body);
-    return res.status(200).send({ message: "success" });
+    const result2 = await User.create(req.body);
+    return res.status(200).send({ data: result2 });
   } catch (err) {
     console.log(err);
     return res.status(500).send({ message: "Something went wrong" });
