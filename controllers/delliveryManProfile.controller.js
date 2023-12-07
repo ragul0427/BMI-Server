@@ -11,6 +11,8 @@ const createDeliveryManProfile = async (req, res) => {
 
 const getDeliveryManProfile = async (req, res) => {
   try {
+    const result=await Profile.find({})
+    return res.status(200).send({data:result})
   } catch (err) {
     console.log(err);
   }
