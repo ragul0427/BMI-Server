@@ -19,7 +19,6 @@ const userSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      required: true,
     },
     tokenRef: String,
   },
