@@ -26,6 +26,7 @@ const profileRoutes = require("./routes/profile.routes.js");
 const scratchRoute = require("./routes/scratchRoute.js");
 const deliverManUsers = require("./routes/deliveryManUserRoute.js");
 const deliverManProfile = require("./routes/deliveryManProfile.route.js");
+const deliverManOrder = require("./routes/deliveryManOrder.route.js");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -62,6 +63,7 @@ app.use("/", notificationRoutes);
 app.use("/", scratchRoute);
 app.use("/", deliverManUsers);
 app.use("/", deliverManProfile);
+app.use("/", deliverManOrder);
 
 mongoose
   .connect(process.env.MONGO_URI, {})
