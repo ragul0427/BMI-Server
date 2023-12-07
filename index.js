@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
+const multer = require("multer");
 const adminrouter = require("./routes/adminUserRoute");
 const categoryRouter = require("./routes/categoryRoute");
 const subCategoryRoute = require("./routes/subCategoryRoute");
@@ -29,8 +30,11 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 
 app.use(express.json());
-app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
+const upload = multer();
+app.use(upload.none());
 app.use(cors());
+app.use(cookieParser());
 app.use(morgan("tiny"));
 app.use("/", adminrouter);
 app.use("/", profileRoutes);
@@ -64,4 +68,4 @@ mongoose
   })
   .catch((err) => {
     console.log(err, "error");
-});
+  });
