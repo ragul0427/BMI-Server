@@ -27,10 +27,13 @@ const scratchRoute = require("./routes/scratchRoute.js");
 const deliverManUsers = require("./routes/deliveryManUserRoute.js");
 const deliverManProfile = require("./routes/deliveryManProfile.route.js");
 const deliverManOrder = require("./routes/deliveryManOrder.route.js");
+const riderVehicelRoute=require("./routes/ridervehicleDetails.route.js")
+const deliveryManOrderStatusRoute=require("./routes/deliveryManOrderStatus.route.js")
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -64,6 +67,8 @@ app.use("/", scratchRoute);
 app.use("/", deliverManUsers);
 app.use("/", deliverManProfile);
 app.use("/", deliverManOrder);
+app.use("/", riderVehicelRoute);
+app.use("/", deliveryManOrderStatusRoute);
 
 mongoose
   .connect(process.env.MONGO_URI, {})
