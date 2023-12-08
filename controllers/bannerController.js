@@ -45,7 +45,21 @@ const getSpecificBanner = async (req, res) => {
     const result = await banner.find({ name: uniqRef });
     return res.status(200).send({ data: result });
   } catch (err) {
+    console.log(err);
     return res.status(500).send("Something went wrong");
+  }
+};
+
+const updateAdvertisementBanner = async (req, res) => {
+  try {
+    let { id } = req.body;
+    const result = await banner.findByIdAndUpdate(
+      { _id: id },
+      { $inc: { count: 1 } }
+    );
+    return res.status(200).send({ data: result });
+  } catch (e) {
+    return res.status(500).send("Something went wrong ");
   }
 };
 
@@ -55,4 +69,5 @@ module.exports = {
   getbanner,
   updatebanner,
   getSpecificBanner,
+  updateAdvertisementBanner,
 };

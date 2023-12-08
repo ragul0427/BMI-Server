@@ -6,6 +6,7 @@ const {
   getbanner,
   updatebanner,
   getSpecificBanner,
+  updateAdvertisementBanner
 } = require("../controllers/bannerController");
 
 router
@@ -16,5 +17,6 @@ router
 
 // APK
 router.get("/get_specific_banner/:id", getSpecificBanner);
+router.put("/update_add_banner_view_count", updateAdvertisementBanner);
 
 module.exports = router;
