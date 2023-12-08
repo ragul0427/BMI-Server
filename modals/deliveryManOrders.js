@@ -10,6 +10,10 @@ const deliveryManOrdersSchema = mongoose.Schema(
       type: Array,
       required: true,
     },
+    PickupLocation:{
+      type:String,
+      required:true,
+    },
     foods: {
       type: Array,
       required: true,
