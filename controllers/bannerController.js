@@ -41,7 +41,8 @@ const deletebanner = async (req, res) => {
 const getSpecificBanner = async (req, res) => {
   try {
     let { id } = req.params;
-    const result = await banner.find({ name: id });
+    let uniqRef = id.split("_").join(" ");
+    const result = await banner.find({ name: uniqRef });
     return res.status(200).send({ data: result });
   } catch (err) {
     return res.status(500).send("Something went wrong");
