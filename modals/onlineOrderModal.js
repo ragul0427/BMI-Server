@@ -18,7 +18,10 @@ const onlineOrderSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    timeSlot: {
+    startTime: {
+      type: String,
+    },
+    stopTime: {
       type: String,
     },
     timePicked: {
