@@ -25,7 +25,10 @@ const callOrderSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    timeSlot: {
+    startTime: {
+      type: String,
+    },
+    stopTime: {
       type: String,
     },
     timePicked: {
@@ -43,6 +46,18 @@ const callOrderSchema = mongoose.Schema(
       type: String,
       default: "Order received",
       required: true,
+    },
+    gst:{
+      type:Number,
+    },
+    deliveryCharge:{
+      type:Number,
+    },
+    transactionCharge:{
+      type:Number,
+    },
+    packingCharge:{
+      type:Number,
     },
   },
   { timestamps: true }

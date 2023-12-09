@@ -11,8 +11,15 @@ const createbanner = async (req, res) => {
 
 const getbanner = async (req, res) => {
   try {
+    const { search } = req.query;
+   if(search===""){
     const result = await banner.find({});
     return res.status(200).send({ data: result });
+   }else{
+    const result = await banner.find({name:search});
+    return res.status(200).send({ data: result });
+   }
+    
   } catch (e) {
     return res.status(500).send("Something went wrong while fetching banner");
   }
@@ -32,7 +39,7 @@ const deletebanner = async (req, res) => {
   try {
     const { id } = req.params;
     await banner.findByIdAndDelete(id);
-    return res.status(200).send("Category deleted");
+    return res.status(200).send("banner deleted");
   } catch (e) {
     return res.status(500).send("Something went wrong while deleting banner");
   }
