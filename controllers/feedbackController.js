@@ -26,11 +26,18 @@ const updateFeedback = async (req, res) => {
     return res.status(500).send("Something went wrong while updating feedback");
   }
 };
-const deleteFeedback = async (req, res) => {};
+
+const deleteMyFeedBack = async (req, res) => {
+  try {
+    const result = await feedback.findByIdAndDelete({ _id: req.params.id });
+    return res.status(200).send("success");
+  } catch (err) {
+    return res.status(500).send("Something went wrong");
+  }
+};
 
 const addMyfeedback = async (req, res) => {
   try {
-    console.log(req.body);
     const formData = {
       userName: _.get(req, "body.userDetails.user", ""),
       mobileNumber: _.get(req, "body.userDetails.phoneNumber", ""),
@@ -47,10 +54,11 @@ const addMyfeedback = async (req, res) => {
 
 const getMyfeedback = async (req, res) => {
   try {
-    const result = await feedback.find({
-      mobileNumber: _.get(req, "body.userDetails.phoneNumber", ""),
-    });
-    console.log(result);
+    const result = await feedback
+      .find({
+        mobileNumber: _.get(req, "body.userDetails.phoneNumber", ""),
+      })
+      .sort({ createdAt: -1 });
     return res.status(200).send({ data: result });
   } catch (err) {
     console.log(err);
@@ -70,7 +78,7 @@ const getAllfeedback = async (req, res) => {
 module.exports = {
   createFeedback,
   updateFeedback,
-  deleteFeedback,
+  deleteMyFeedBack,
   getFeedback,
   addMyfeedback,
   getMyfeedback,

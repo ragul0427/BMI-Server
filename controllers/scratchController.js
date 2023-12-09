@@ -1,3 +1,4 @@
+const { getDateAfterDays } = require("../helper/date_helper");
 const Scratch = require("../modals/scratchCard.modal");
 const _ = require("lodash");
 
@@ -22,8 +23,6 @@ const getScratch = async (req, res) => {
 
 const checkScrachCardDetails = async (req, res) => {
   try {
-    console.log(_.get(req, "body.card_number", ""));
-
     const validate = await Scratch.find({
       number: _.get(req, "body.card_number", ""),
     });
@@ -40,34 +39,24 @@ const checkScrachCardDetails = async (req, res) => {
         .send({ messsage: "The scratch card has already been utilized." });
     }
 
-    if (_.get(validate, "[0].status", false)) {
-      let formdata = {
-        order_id: _.get(req, "body.order_id", ""),
-        contact_number: _.get(req, "body.contact_number", ""),
-        userId: _.get(req, "body.userDetails._id", ""),
-        expired: true,
-      };
-      await Scratch.findByIdAndUpdate(
-        { _id: _.get(validate, "[0]._id", false) },
-        formdata
-      );
-      return res.status(200).send({ data: "success" });
-    } else {
-      let formdata = {
-        order_id: _.get(req, "body.order_id", ""),
-        contact_number: _.get(req, "body.contact_number", ""),
-        userId: _.get(req, "body.userDetails._id", ""),
-        expired: true,
-      };
-      await Scratch.findByIdAndUpdate(
-        { _id: _.get(validate, "[0]._id", false) },
-        formdata
-      );
-      return res.status(200).send({ data: "failed" });
-    }
+    const ex_date = getDateAfterDays(30);
+    let formdata = {
+      order_id: _.get(req, "body.order_id", ""),
+      contact_number: _.get(req, "body.contact_number", ""),
+      userId: _.get(req, "body.userDetails._id", ""),
+      expired: true,
+      expireDate: ex_date,
+    };
+
+    await Scratch.findByIdAndUpdate(
+      { _id: _.get(validate, "[0]._id", false) },
+      formdata
+    );
+    let result = _.get(validate, "[0].status", false) ? "success" : "failed";
+    return res.status(200).send({ data: result });
   } catch (err) {
     console.log(err);
-    return res.status(500).send("Something went wrong while fetching video");
+    return res.status(500).send("Something went wrong");
   }
 };
 
@@ -75,10 +64,11 @@ const checkMyContestDetails = async (req, res) => {
   try {
     const result = await Scratch.find({
       userId: _.get(req, "body.userDetails._id", ""),
-    }).sort({ createdAt: -1 });
+      status: true,
+    }).sort({ expireDate: -1 });
     return res.status(200).send({ data: result });
   } catch (e) {
-    return res.status(500).send("Something went wrong while fetching video");
+    return res.status(500).send("Something went wrong ");
   }
 };
 
