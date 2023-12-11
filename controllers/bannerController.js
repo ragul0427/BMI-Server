@@ -12,14 +12,13 @@ const createbanner = async (req, res) => {
 const getbanner = async (req, res) => {
   try {
     const { search } = req.query;
-   if(search===""){
-    const result = await banner.find({});
-    return res.status(200).send({ data: result });
-   }else{
-    const result = await banner.find({name:search});
-    return res.status(200).send({ data: result });
-   }
-    
+    if (!search) {
+      const result = await banner.find({});
+      return res.status(200).send({ data: result });
+    } else {
+      const result = await banner.find({ name: search });
+      return res.status(200).send({ data: result });
+    }
   } catch (e) {
     return res.status(500).send("Something went wrong while fetching banner");
   }
