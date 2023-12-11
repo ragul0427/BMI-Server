@@ -15,6 +15,15 @@ const bannerSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    userDetails: {
+      userId: String,
+      phoneNumber: String,
+      userName: String,
+      refDate: {
+        type: Date,
+        default: Date.now(),
+      },
+    },
   },
   {
     timestamps: true,
