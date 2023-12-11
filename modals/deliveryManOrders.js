@@ -2,17 +2,21 @@ const mongoose = require("mongoose");
 
 const deliveryManOrdersSchema = mongoose.Schema(
   {
-    orderId: {
-      type: String,
-      required: true,
-    },
+    // orderId: {
+    //   type: String,
+    //   required: true,
+    // },
     location: {
       type: Array,
       required: true,
     },
-    PickupLocation:{
-      type:String,
-      required:true,
+    hotelContactNumber: {
+      type: Number,
+      required: true,
+    },
+    PickupLocation: {
+      type: String,
+      required: true,
     },
     foods: {
       type: Array,
