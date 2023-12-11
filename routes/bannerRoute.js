@@ -6,8 +6,9 @@ const {
   getbanner,
   updatebanner,
   getSpecificBanner,
-  updateAdvertisementBanner
+  updateAdvertisementBanner,
 } = require("../controllers/bannerController");
+const { webTokenMiddleware } = require("../middleWare/webMiddleware");
 
 router
   .post("/createbanner", createbanner)
@@ -17,6 +18,10 @@ router
 
 // APK
 router.get("/get_specific_banner/:id", getSpecificBanner);
-router.put("/update_add_banner_view_count", updateAdvertisementBanner);
+router.put(
+  "/update_add_banner_view_count",
+  webTokenMiddleware,
+  updateAdvertisementBanner
+);
 
 module.exports = router;

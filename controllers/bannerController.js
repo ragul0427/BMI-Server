@@ -1,4 +1,5 @@
 const banner = require("../modals/bannerModal");
+const _ = require("lodash");
 
 const createbanner = async (req, res) => {
   try {
@@ -59,9 +60,20 @@ const getSpecificBanner = async (req, res) => {
 const updateAdvertisementBanner = async (req, res) => {
   try {
     let { id } = req.body;
+    let formData = {
+      userId: _.get(req, "body.userDetails._id", ""),
+      phoneNumber: _.get(req, "body.userDetails.phoneNumber", ""),
+      userName: _.get(req, "body.userDetails.user", ""),
+    };
+
     const result = await banner.findByIdAndUpdate(
       { _id: id },
-      { $inc: { count: 1 } }
+      {
+        $inc: { count: 1 },
+        $push: {
+          userDetails: formData,
+        },
+      }
     );
     return res.status(200).send({ data: result });
   } catch (e) {
