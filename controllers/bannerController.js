@@ -3,6 +3,7 @@ const _ = require("lodash");
 
 const createbanner = async (req, res) => {
   try {
+    console.log(req.body,"body")
     const result = await banner.create({ ...req.body.formData });
     return res.status(200).send({ data: result });
   } catch (err) {
@@ -27,6 +28,7 @@ const getbanner = async (req, res) => {
 
 const updatebanner = async (req, res) => {
   const { id } = req.params;
+  console.log(req.body,"ejnj")
   try {
     const result = await banner.findByIdAndUpdate(id, { ...req.body });
     return res.status(200).send({ data: result });

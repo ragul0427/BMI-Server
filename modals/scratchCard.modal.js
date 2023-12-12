@@ -17,7 +17,10 @@ const scratchSchema = mongoose.Schema(
     order_id: String,
     contact_number: Number,
     userId: String,
-    expireDate: Date,
+    expireDate:{
+      type:Date,
+      default:null
+    },
   },
   { timestamps: true }
 );
