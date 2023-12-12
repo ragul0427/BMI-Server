@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const deliveryManOrdersSchema = mongoose.Schema(
   {
-    orderId: {
-      type: String,
-      required: true,
-    },
+    // orderId: {
+    //   type: String,
+    //   required: true,
+    // },
     location: {
       type: Array,
       required: true,
