@@ -25,6 +25,10 @@ const feedbackSchema = mongoose.Schema(
       default: "no",
       type: String,
     },
+    userRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+    },
     user_image: {
       type: String,
       default: null,
