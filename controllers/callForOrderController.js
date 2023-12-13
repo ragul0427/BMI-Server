@@ -25,7 +25,6 @@ const getCallOrder = async (req, res) => {
 
 const updateCallOrder = async (req, res) => {
   const { id } = req.params;
-  console.log(req.body, id, "wejb");
   try {
     const result = await callForOrder.findByIdAndUpdate(id, {
       ...req.body,
@@ -47,7 +46,7 @@ const getMyCallForOrder = async (req, res) => {
     const result = await callForOrder
       .find({ mobileNumber: user_contact })
       .sort({ createdAt: -1 });
-      console.log(result);
+    
     return res.status(200).send({ data: result });
   } catch (err) {
     return res
