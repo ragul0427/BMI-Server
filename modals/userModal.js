@@ -10,6 +10,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    alter_mobile_number: {
+      type: String,
+      default: null,
+    },
     email: {
       type: String,
       required: true,
@@ -21,6 +25,10 @@ const userSchema = mongoose.Schema(
       type: String,
     },
     tokenRef: String,
+    user_image: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );
