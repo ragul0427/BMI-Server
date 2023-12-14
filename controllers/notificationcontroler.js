@@ -2,7 +2,6 @@ const notification = require("../modals/notification.model");
 
 const createNotifications = async (req, res) => {
   try {
-    console.log(req.body,"ody")
     const result = await notification.create({ ...req.body });
     return res.status(200).send({ data: result });
   } catch (err) {
