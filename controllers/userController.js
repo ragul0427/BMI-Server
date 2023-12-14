@@ -76,6 +76,7 @@ const makeUserToken = async (req, res) => {
       id: _.get(result, "[0]._id", ""),
       phonenumber: _.get(result, "[0].phoneNumber", ""),
       username: _.get(result, "[0].user", ""),
+      email: _.get(result, "[0].email", ""),
     };
     const token = jwt.sign(tokenConstraints, process.env.SECRET_KEY, {});
     res.status(200).send({ data: token, message: "Start Your Journey" });
@@ -87,12 +88,10 @@ const makeUserToken = async (req, res) => {
 
 const checkTokenStatus = async (req, res) => {
   try {
-    let clientdata = {
-      username: _.get(req, "body.userDetails.user", ""),
-      phonenumber: _.get(req, "body.userDetails.phoneNumber", ""),
-    };
-
-    return res.status(200).send({ data: clientdata });
+    const result = await User.find({
+      _id: _.get(req, "body.userDetails._id", ""),
+    });
+    return res.status(200).send({ data: result });
   } catch (err) {
     console.log(err);
     return res.status(500).send({ message: "Something went wrong" });
@@ -112,6 +111,36 @@ const makeLogoutUser = async (req, res) => {
   }
 };
 
+const updateMyPic = async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(
+      { _id: _.get(req, "body.userDetails._id", "") },
+      { user_image: _.get(req, "body.user_image", "") }
+    );
+    return res.status(200).send({ message: "success" });
+  } catch (err) {
+    return res.status(500).send({ message: "Something went wrong" });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    const formData = {
+      user: _.get(req, "body.user", ""),
+      email: _.get(req, "body.email", ""),
+      phoneNumber: _.get(req, "body.phoneNumber", ""),
+      alter_mobile_number: _.get(req, "body.alter_mobile_number", ""),
+    };
+    await User.findByIdAndUpdate(
+      { _id: _.get(req, "body.userDetails._id", "") },
+      formData
+    );
+    return res.status(200).send({ message: "success" });
+  } catch (err) {
+    return res.status(500).send({ message: "Something went wrong" });
+  }
+};
+
 module.exports = {
   getUser,
   getAllUsers,
@@ -120,4 +149,6 @@ module.exports = {
   makeUserToken,
   checkTokenStatus,
   makeLogoutUser,
+  updateMyPic,
+  updateProfile,
 };

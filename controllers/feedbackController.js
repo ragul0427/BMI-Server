@@ -43,6 +43,7 @@ const addMyfeedback = async (req, res) => {
       mobileNumber: _.get(req, "body.userDetails.phoneNumber", ""),
       message: _.get(req, "body.feedback", ""),
       ratings: _.get(req, "body.rating", ""),
+      userRef: _.get(req, "body.userDetails._id", ""),
     };
     const result = await feedback.create(formData);
     return res.status(200).send({ data: result });
@@ -68,7 +69,9 @@ const getMyfeedback = async (req, res) => {
 
 const getAllfeedback = async (req, res) => {
   try {
-    const result = await feedback.find({ options: "yes" });
+    const result = await feedback
+      .find({ options: "yes" })
+      .populate("userRef", { _id: 0, tokenRef: 0 });
     return res.status(200).send({ data: result });
   } catch (e) {
     return res.status(500).send("Something went wrong");
@@ -82,5 +85,6 @@ module.exports = {
   getFeedback,
   addMyfeedback,
   getMyfeedback,
+  
   getAllfeedback,
 };

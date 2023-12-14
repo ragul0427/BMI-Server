@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const multer = require("multer");
 const adminrouter = require("./routes/adminUserRoute");
 const categoryRouter = require("./routes/categoryRoute");
 const subCategoryRoute = require("./routes/subCategoryRoute");
@@ -27,19 +26,21 @@ const scratchRoute = require("./routes/scratchRoute.js");
 const deliverManUsers = require("./routes/deliveryManUserRoute.js");
 const deliverManProfile = require("./routes/deliveryManProfile.route.js");
 const deliverManOrder = require("./routes/deliveryManOrder.route.js");
-const riderVehicelRoute=require("./routes/ridervehicleDetails.route.js")
-const deliveryManOrderStatusRoute=require("./routes/deliveryManOrderStatus.route.js")
+const riderVehicelRoute = require("./routes/ridervehicleDetails.route.js");
+const uploadRoute = require("./routes/upload.routes.js");
+const deliveryManOrderStatusRoute = require("./routes/deliveryManOrderStatus.route.js");
 const footerRoute=require("./routes/footer.route.js")
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-const upload = multer();
-app.use(upload.none());
+app.use(express.urlencoded({ extended: true }));
+
+
 app.use(cors());
 app.use(cookieParser());
 app.use(morgan("tiny"));
@@ -51,6 +52,7 @@ app.use("/", categoryRouter);
 app.use("/", subCategoryRoute);
 app.use("/", productRoute);
 app.use("/", bannerRoute);
+app.use("/", uploadRoute);
 app.use("/", videoRoute);
 app.use("/", feedbackRoute);
 app.use("/", inventoryRoute);
