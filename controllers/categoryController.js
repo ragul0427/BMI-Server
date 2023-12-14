@@ -1,16 +1,33 @@
 const { isEmpty, get } = require("lodash");
 const category = require("../modals/categoryModal");
 const subCategory = require("../modals/subCategoryModal");
+const fs = require("fs");
 const Product = require("../modals/productModal");
+const { uploadToCloud } = require("../helper/uploadToS3");
+const s3 = require("../helper/s3config");
 
 const createCategory = async (req, res) => {
   try {
-    const result = await category.create({ ...req.body.formData });
-    return res.status(200).send({ data: result });
+    const result = uploadToCloud(req);
+    s3.upload(result, async (err, data) => {
+      const file = req.file;
+      if (err) {
+        return res.status(500).send(err);
+      }
+      fs.unlink(file.path, (unlinkErr) => {
+        if (unlinkErr) {
+        }
+      });
+      await category.create({
+        name: req.body.name,
+        status: req.body.status,
+        image: data.Location,
+      });
+      return res.status(200).send({ url: data.Location });
+    });
+    console.log(req.body, "lwdkwo");
   } catch (err) {
-    return res
-      .status(500)
-      .send("Something went wrong while creating inventory");
+    return res.status(500).send("Something went wrong while creating category");
   }
 };
 

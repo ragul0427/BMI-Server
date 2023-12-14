@@ -1,9 +1,31 @@
 const subCategory = require("../modals/subCategoryModal");
+const { uploadToCloud } = require("../helper/uploadToS3");
+const s3 = require("../helper/s3config");
+const fs = require("fs");
 
 const createSubCategory = async (req, res) => {
   try {
-    const result = await subCategory.create({ ...req.body.formData });
-    return res.status(200).send({ data: result });
+    const result = uploadToCloud(req);
+    s3.upload(result, async (err, data) => {
+      const file = req.file;
+      if (err) {
+        return res.status(500).send(err);
+      }
+      fs.unlink(file.path, (unlinkErr) => {
+        if (unlinkErr) {
+        }
+      });
+      await subCategory.create({
+        name: req.body.name,
+        status: req.body.status,
+        categoryName:req.body.categoryName,
+        categoryId:req.body.categoryId,
+        image: data.Location,
+        
+      });
+      return res.status(200).send({ url: data.Location });
+    });
+    
   } catch (err) {
     return res.status(500).send("Something went wrong while creating subcategory");
   }
