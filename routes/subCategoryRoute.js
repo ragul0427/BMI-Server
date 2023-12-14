@@ -6,9 +6,10 @@ const {
   updateSubCategory,
   deleteSubCategory,
 } = require("../controllers/subCategoryController");
+const upload = require("../helper/upload");
 
 router
-  .post("/createsubcategory", createSubCategory)
+  .post("/createsubcategory", upload.single("file"), createSubCategory)
   .get("/getsubcategory", getSubCategory)
   .put("/updatesubcategory/:id", updateSubCategory)
   .delete("/deletesubcategory/:id", deleteSubCategory);
