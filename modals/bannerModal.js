@@ -10,6 +10,7 @@ const bannerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    productId:String,
     content: String,
     count: {
       type: Number,

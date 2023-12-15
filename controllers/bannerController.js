@@ -27,6 +27,7 @@ const getbanner = async (req, res) => {
 
 const updatebanner = async (req, res) => {
   const { id } = req.params;
+ 
   try {
     const result = await banner.findByIdAndUpdate(id, { ...req.body });
     return res.status(200).send({ data: result });

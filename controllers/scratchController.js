@@ -5,7 +5,7 @@ const _ = require("lodash");
 const createScratch = async (req, res) => {
   try {
     const { number } = req.body;
-    const isNumber = await Scratch.find({ number });
+    const isNumber = await Scratch.find({ number })
 
     if (isNumber.length !== 0) {
       return res.status(404).send({ data: "This number already exists..." });
@@ -22,7 +22,7 @@ const getScratch = async (req, res) => {
   try {
     const { search } = req.query;
     if (search === "all") {
-      const result = await Scratch.find({});
+      const result = await Scratch.find({}).sort({createdAt:-1});
       return res.status(200).send({ data: result });
     } else if (search === "expired" || search === "notexpired") {
       const result = await Scratch.find({

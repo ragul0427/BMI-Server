@@ -2,9 +2,10 @@ const Table = require("../modals/table");
 
 const createTable = async (req, res) => {
   try {
-    const result = await Table.create({ ...req.body.formData });
+    const result = await Table.create({ ...req.body });
     return res.status(200).send({ data: result });
   } catch (err) {
+    console.log(err,"err")
     return res.status(500).send("Something went wrong while creating table");
   }
 };
