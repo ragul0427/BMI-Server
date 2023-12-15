@@ -24,7 +24,7 @@ const moveToCloud = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    return res.status(500).send({ message: "failed to move to cloud" });
+    return res.status(500).send({ message: "failed to update user profile" });
   }
 };
 

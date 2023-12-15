@@ -46,7 +46,14 @@ const deleteCategory = async (req, res) => {
 // web
 const getAllCusines = async (req, res) => {
   try {
-    const result = await category.find({ status: true });
+    let { search } = JSON.parse(req.params.id);
+    let where = { status: true };
+
+    if (search) {
+      where.name = { $regex: search, $options: "i" };
+    }
+    console.log(JSON.parse(req.params.id), where);
+    const result = await category.find(where);
     return res.status(200).send({ data: result });
   } catch (e) {
     return res.status(500).send("Something went wrong while deleting category");
