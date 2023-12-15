@@ -11,6 +11,7 @@ const {
 } = require("../controllers/tableBookingController");
 const { webTokenMiddleware } = require("../middleWare/webMiddleware");
 
+
 router
   .post("/createbooking", createTableBooking)
   .get("/getbooking", getTableBooking)

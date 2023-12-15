@@ -30,6 +30,7 @@ const createSubCategory = async (req, res) => {
     return res.status(500).send("Something went wrong while creating subcategory");
   }
 };
+
 const getSubCategory = async (req, res) => {
  
   try {
@@ -39,6 +40,7 @@ const getSubCategory = async (req, res) => {
     return res.status(500).send("Something went wrong while fetching subcategory");
   }
 };
+
 const updateSubCategory = async (req, res) => {
   const { id } = req.params;
   try {
