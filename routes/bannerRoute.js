@@ -9,9 +9,10 @@ const {
   updateAdvertisementBanner,
 } = require("../controllers/bannerController");
 const { webTokenMiddleware } = require("../middleWare/webMiddleware");
+const upload = require("../helper/upload");
 
 router
-  .post("/createbanner", createbanner)
+  .post("/createbanner",upload.single("file"), createbanner)
   .get("/getbanner", getbanner)
   .put("/updatebanner/:id", updatebanner)
   .delete("/deletebanner/:id", deletebanner);
