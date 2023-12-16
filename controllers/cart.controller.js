@@ -67,6 +67,7 @@ const getCurrentUserCartProducts = async (req, res) => {
       return res.status(200).send({ data: getSelectiveProducts });
     }
   } catch (err) {
+    console.log(err)
     return res.status(500).send({ message: "Something went wrong" });
   }
 };
