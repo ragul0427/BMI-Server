@@ -1,5 +1,5 @@
 const fs = require("fs");
-const _ = require("lodash");
+const { v4: uuidv4 } = require("uuid");
 const s3 = require("./s3config");
 
 const uploadToCloud = (req) => {
@@ -7,7 +7,7 @@ const uploadToCloud = (req) => {
     const file = req.file;
     const params = {
       Bucket: process.env.AWS_BUCKET,
-      Key: file.originalname,
+      Key: uuidv4() + file.originalname,
       ACL: "public-read",
       Body: fs.createReadStream(file.path),
     };
@@ -17,4 +17,28 @@ const uploadToCloud = (req) => {
   }
 };
 
-module.exports = { uploadToCloud: uploadToCloud };
+const deleteFileInLocal = (file) => {
+  try {
+    fs.unlinkSync(file.path);
+  } catch (err) {
+    return err;
+  }
+};
+
+const deleteFileInCloud = (key) => {
+  try {
+    const params = {
+      Bucket: process.env.AWS_BUCKET,
+      Key: key,
+    };
+    s3.deleteObject(params, (err, data) => {
+      if (err) {
+        return err;
+      }
+    });
+  } catch (err) {
+    return err;
+  }
+};
+
+module.exports = { uploadToCloud, deleteFileInLocal, deleteFileInCloud };

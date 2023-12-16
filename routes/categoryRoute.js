@@ -22,7 +22,7 @@ router
   .delete("/deletecategory/:id", deleteCategory);
 
 // web
-router.get("/get_all_cusiness_data", getAllCusines);
+router.get("/get_all_cusiness_data/:id", getAllCusines);
 router.get("/get_all_cusiness_filter/:id", getAllCusinessFilter);
 router.get("/get_filtered_products/:id", getFilteredProducts);
 
