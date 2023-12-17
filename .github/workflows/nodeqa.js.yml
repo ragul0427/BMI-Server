@@ -28,7 +28,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build --if-present
+    - run: cp /home/ubuntu/qaserverenv/.env /home/ubuntu/qaserver/_work/BromagAdminServer/BromagAdminServer
+    - run: pm2 restart qa
   
    
     
