@@ -28,6 +28,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
+    - run: cp /home/ubuntu/devserverenv/.env /home/ubuntu/devserver/dev/BromagAdminServer/BromagAdminServer
+    - run: pm2 restart dev
     
     
   
