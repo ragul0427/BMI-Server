@@ -5,13 +5,13 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "QA" ]
+    branches: [ "dev" ]
   
 
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: dev
 
     strategy:
       matrix:
@@ -28,8 +28,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: cp /home/ubuntu/qaserverenv/.env /home/ubuntu/qaserver/_work/BromagAdminServer/BromagAdminServer
-    - run: pm2 restart qa
+    
+    
   
    
     
