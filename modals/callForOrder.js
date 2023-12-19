@@ -22,7 +22,7 @@ const callOrderSchema = mongoose.Schema(
       type: Array,
     },
     deliveryStatus:{
-      type:String,
+      type:String, // delivery, takeaway
       required:true,
     },
     location: {

@@ -29,6 +29,7 @@
     "path": "^0.12.7",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
+    "super-easy-validator": "^0.8.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
