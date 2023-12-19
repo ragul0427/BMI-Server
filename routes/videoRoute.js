@@ -6,11 +6,12 @@ const {
   updateVideo,
   deleteVideo,
 } = require("../controllers/videoController");
+const upload = require("../helper/upload");
 
 router
-  .post("/createvideo", createVideo)
+  .post("/createvideo",upload.single("file"), createVideo)
   .get("/getvideo", getVideo)
-  .put("/updatevideo/:id", updateVideo)
+  .put("/updatevideo/:id",upload.single("file"), updateVideo)
   .delete("/deletevideo/:id", deleteVideo);
 
 module.exports = router;

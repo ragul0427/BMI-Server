@@ -8,6 +8,9 @@ const videoSchema = mongoose.Schema({
     video:{
         type:String,
         required:true,
+    },
+    video_key:{
+        type:String,
     }
 },{timestamps:true})
 
