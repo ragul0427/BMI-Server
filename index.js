@@ -43,7 +43,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 app.use(cookieParser());
-app.use(morgan("tiny"));
+app.use(morgan("dev"));
+
 app.use("/", adminrouter);
 app.use("/", profileRoutes);
 app.use("/", deliveryRoutes);
@@ -72,7 +73,12 @@ app.use("/", deliverManProfile);
 app.use("/", deliverManOrder);
 app.use("/", riderVehicelRoute);
 app.use("/", deliveryManOrderStatusRoute);
-app.use("/",footerRoute)
+app.use("/", footerRoute)
+app.use("/delivery-boy", require('./routes/delivery-boy.routes.js'))
+
+app.all('*', (req, res) => {
+  return res.status(405).json({message: 'route not implemented'})
+})
 
 mongoose
   .connect(process.env.MONGO_URI, {})
