@@ -1,5 +1,10 @@
 {
   "cSpell.words": [
     "aadhar"
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#3F2727",
+    "titleBar.activeBackground": "#593736",
+    "titleBar.activeForeground": "#FCFAFA"
+  }
 }

@@ -69,10 +69,66 @@ async function getProfile(req, res) {
 	}
 }
 
+async function updateDeliveryBoy(req, res) {
+	try {
+		const { password, firstName, lastName, phone, email, pinCode } = req.body
+    const deliveryBoy = req.deliveryBoy;
+
+    const rules = {
+      password: 'optional|string|min:3',
+      firstName: 'optional|name',
+      lastName: 'optional|name',
+      phone: 'optional|regex:/^[0-9]{10}$/',
+      email: 'optional|email',
+      pinCode: 'optional|string|natural|size:6'
+    }
+    const {errors} = validate(rules, req.body)
+		if (errors) {
+			return res.status(400).json({ message: errors[0] })
+		}
+
+    deliveryBoy.password = password ?? deliveryBoy.password;
+    deliveryBoy.firstName = firstName ?? deliveryBoy.firstName;
+    deliveryBoy.lastName = lastName ?? deliveryBoy.lastName;
+    deliveryBoy.phone = phone ?? deliveryBoy.phone;
+    deliveryBoy.email = email ?? deliveryBoy.email;
+    deliveryBoy.pinCode = pinCode ?? deliveryBoy.pinCode;
+    await deliveryBoy.save();
+
+		return res.json({ message: 'Details updated successfully' })
+	} catch (error) {
+		console.error(error)
+	}
+}
+
+async function putDeliveryBoyDocuments(req, res) {
+	try {
+		const deliveryBoy = req.deliveryBoy
+		const aadharCard = req.files?.aadharCard?.[0]
+		const panCard = req.files?.panCard?.[0]
+		const drivingLicense = req.files?.drivingLicense?.[0]
+		const photo = req.files?.photo?.[0]
+
+		deliveryBoy.password = password ?? deliveryBoy.password
+		deliveryBoy.firstName = firstName ?? deliveryBoy.firstName
+		deliveryBoy.lastName = lastName ?? deliveryBoy.lastName
+		deliveryBoy.phone = phone ?? deliveryBoy.phone
+		deliveryBoy.email = email ?? deliveryBoy.email
+		deliveryBoy.pinCode = pinCode ?? deliveryBoy.pinCode
+		await deliveryBoy.save()
+
+		return res.json({ message: 'Details updated successfully' })
+	} catch (error) {
+		console.error(error)
+	}
+}
+
 const DeliveryBoyControllers = {
   createDeliveryBoy,
 	login,
-  getProfile
+  getProfile,
+  updateDeliveryBoy,
+  putDeliveryBoyDocuments
 }
 
 module.exports = DeliveryBoyControllers
