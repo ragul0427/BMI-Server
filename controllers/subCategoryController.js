@@ -21,12 +21,12 @@ const createSubCategory = async (req, res) => {
         }
       });
       await subCategory.create({
-        name: _.get(req.body, 'name', ''),
-        status: _.get(req.body, 'status', ''),
-        categoryName: _.get(req.body, 'categoryName', ''),
-        categoryId: _.get(req.body, 'categoryId', ''),
-        image: _.get(data, 'Location', ''),
-        subcategory_image_key: _.get(data, 'key', ''),
+        name:get(req.body, 'name', ''),
+        status:get(req.body, 'status', ''),
+        categoryName:get(req.body, 'categoryName', ''),
+        categoryId:get(req.body, 'categoryId', ''),
+        image:get(data, 'Location', ''),
+        subcategory_image_key:get(data, 'key', ''),
       });
       return res.status(200).send({ url: data.Location });
     });
