@@ -1,32 +1,27 @@
 const banner = require("../modals/bannerModal");
 const _ = require("lodash");
-const { uploadToCloud } = require("../helper/uploadToS3");
+const { uploadToCloud, deleteFileInLocal } = require("../helper/uploadToS3");
 const s3 = require("../helper/s3config");
 const fs = require("fs");
 
 const createbanner = async (req, res) => {
   try {
-    const result = uploadToCloud(req);
-    s3.upload(result, async (err, data) => {
-      const file = req.file;
-      if (err) {
-        return res.status(500).send(err);
-      }
-      fs.unlink(file.path, (unlinkErr) => {
-        if (unlinkErr) {
-        }
-      });
-      await banner.create({
-        name: req.body.name,
-        content: req.body.content,
-        productId:req.body.productId,
-        image: data.Location,
-        
-      });
-      return res.status(200).send({ url: data.Location });
-    });
-    
+    const result = uploadToCloud(req, 2);
+    req.body.image = await Promise.all(
+      result.map(async (res) => {
+        let data = await s3.upload(res).promise();
+        return {
+          url: data.Location,
+          key: data.Key,
+        };
+      })
+    );
+   
+    deleteFileInLocal(req, 2);
+    const write = await banner.create(req.body);
+    return res.status(200).send({ data: write });
   } catch (err) {
+    console.log(err);
     return res.status(500).send("Something went wrong while creating banner");
   }
 };
@@ -48,11 +43,30 @@ const getbanner = async (req, res) => {
 
 const updatebanner = async (req, res) => {
   const { id } = req.params;
- 
+
   try {
-    const result = await banner.findByIdAndUpdate(id, { ...req.body });
-    return res.status(200).send({ data: result });
+    const result = uploadToCloud(req, 2);
+    const r = await Promise.all(
+      result.map(async (res) => {
+        let data = await s3.upload(res).promise();
+        return {
+          url: data.Location,
+          key: data.Key,
+        };
+      })
+    );
+    deleteFileInLocal(req, 2);
+
+    if (_.get(req, "body.rest", false)) {
+      req.body.image = [...r, ...JSON.parse(req.body.rest)];
+    } else {
+      req.body.image = [...r];
+    }
+ console.log(req.body);
+    const output = await banner.findByIdAndUpdate(id, req.body);
+    return res.status(200).send({ data: output });
   } catch (e) {
+    console.log(e)
     return res.status(500).send("Something went wrong while updating banner");
   }
 };

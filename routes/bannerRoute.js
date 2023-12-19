@@ -12,9 +12,9 @@ const { webTokenMiddleware } = require("../middleWare/webMiddleware");
 const upload = require("../helper/upload");
 
 router
-  .post("/createbanner",upload.single("file"), createbanner)
+  .post("/createbanner",upload.array("images"), createbanner)
   .get("/getbanner", getbanner)
-  .put("/updatebanner/:id", updatebanner)
+  .put("/updatebanner/:id",upload.array("images"), updatebanner)
   .delete("/deletebanner/:id", deletebanner);
 
 // APK
