@@ -6,11 +6,13 @@ const bannerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
-      type: String,
-      required: true,
-    },
-    productId:String,
+    image: [
+      {
+        url: String,
+        key: String,
+      },
+    ],
+    productId: String,
     content: String,
     count: {
       type: Number,
