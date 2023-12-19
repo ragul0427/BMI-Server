@@ -1,9 +1,9 @@
 const product = require("../modals/productModal");
 const Cart = require("../modals/cart.models.js");
-const { uploadToCloud } = require("../helper/uploadToS3");
+const { uploadToCloud,deleteFileInCloud,deleteFileInLocal } = require("../helper/uploadToS3");
 const s3 = require("../helper/s3config");
 const fs = require("fs");
-const _ = require("lodash");
+const { isEmpty, get } = require("lodash");
 
 const createProduct = async (req, res) => {
   try {
@@ -20,13 +20,15 @@ const createProduct = async (req, res) => {
       await product.create({
         name: req.body.name,
         status: req.body.status,
-        offer: req.body.offer,
+        discountPrice: req.body.discountPrice,
+        offer:req.body.offer,
         price: req.body.price,
         categoryName: req.body.categoryName,
         subCategoryName: req.body.subCategoryName,
         categoryId: req.body.categoryId,
         subCategoryId: req.body.subCategoryId,
         image: data.Location,
+        product_image_key:data.key
       });
       return res.status(200).send({ url: data.Location });
     });
@@ -47,8 +49,53 @@ const getProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await product.findByIdAndUpdate(id, { ...req.body });
-    return res.status(200).send({ data: result });
+    console.log(req.file,"file")
+    if (get(req, "file", false)) {
+      console.log("true", id, req.body);
+      const result = uploadToCloud(req);
+      s3.upload(result, async (err, data) => {
+        const file = req.file;
+        if (err) {
+          return res.status(500).send(err);
+        }
+        deleteFileInLocal(file);
+       
+        await product.findByIdAndUpdate(id, {
+          name: req.body.name,
+          status: req.body.status,
+          offer:req.body.offer,
+          discountPrice: req.body.discountPrice,
+          price: req.body.price,
+          categoryName: req.body.categoryName,
+          subCategoryName: req.body.subCategoryName,
+          categoryId: req.body.categoryId,
+          subCategoryId: req.body.subCategoryId,
+          image: data.Location,
+          product_image_key: data.key,
+        });
+        deleteFileInCloud(get(req.body, "image_key"));
+        return res.status(200).send({ Message: "data updated successfully" });
+      });
+    }else {
+      console.log("false")
+      await product.findByIdAndUpdate(
+        id,
+        {
+          name: req.body.name,
+          status: req.body.status,
+          offer: req.body.offer,
+          price: req.body.price,
+          categoryName: req.body.categoryName,
+          subCategoryName: req.body.subCategoryName,
+          categoryId: req.body.categoryId,
+          subCategoryId: req.body.subCategoryId,
+          product_image_key: get(req, "body.image_key", ""),
+          image: get(req, "body.image", "") 
+        }
+      
+      );
+      return res.status(200).send({ Message: "created successfully" });
+    }
   } catch (e) {
     return res.status(500).send("Something went wrong while updating product");
   }
@@ -58,6 +105,7 @@ const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
     await product.findByIdAndDelete(id);
+    deleteFileInCloud(get(req.body, "image"));
     return res.status(200).send("Category deleted");
   } catch (e) {
     return res.status(500).send("Something went wrong while delete product");

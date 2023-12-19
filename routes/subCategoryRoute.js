@@ -11,7 +11,7 @@ const upload = require("../helper/upload");
 router
   .post("/createsubcategory", upload.single("file"), createSubCategory)
   .get("/getsubcategory", getSubCategory)
-  .put("/updatesubcategory/:id", updateSubCategory)
+  .put("/updatesubcategory/:id",upload.single("file"), updateSubCategory)
   .delete("/deletesubcategory/:id", deleteSubCategory);
 
 module.exports = router;

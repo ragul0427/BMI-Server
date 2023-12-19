@@ -17,6 +17,9 @@ const tableSchema = mongoose.Schema(
     status: {
       type: Boolean,
       default: false,
+    },
+    table_image_key:{
+      type:String,
     }
   },
   { timestamps: true }

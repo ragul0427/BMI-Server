@@ -9,7 +9,7 @@ const upload = require("../helper/upload");
 router
   .post("/createtable",upload.single("file"), createTable)
   .get("/gettable", getTable)
-  .put("/updatetable/:id", updateTable)
+  .put("/updatetable/:id", upload.single("file"),updateTable)
   .delete("/deletetable/:id", deleteTable);
 
 // Web

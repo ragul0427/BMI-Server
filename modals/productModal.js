@@ -17,6 +17,10 @@ const productSchema=mongoose.Schema({
         type:String,
         required:true
     },
+    discountPrice:{
+        type:Number,
+        required:true
+    },
     status:{
         type:Boolean,
         required:true
@@ -36,6 +40,9 @@ const productSchema=mongoose.Schema({
     subCategoryName:{
         type:String,
         required:true
+    },
+    product_image_key:{
+        type:String,
     }
 })
 

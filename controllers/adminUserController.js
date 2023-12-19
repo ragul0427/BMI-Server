@@ -1,9 +1,10 @@
 const Admin = require("../modals/adminUserModal");
 const jwt = require("jsonwebtoken");
+const {get}=require("lodash")
 
 const getUser = async (req, res) => {
   try {
-    const { name, password } = req.body.values;
+    const { name, password } = get(req,"body.values","");
     const user = await Admin.findOne({ name });
 
     if (!user) {
@@ -15,7 +16,7 @@ const getUser = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: user._id, name: user.name },
+      { userId: get(user,"_id",""), name: get(user,"name") },
       process.env.SECRET_KEY,
       { expiresIn: "10000h" }
     );

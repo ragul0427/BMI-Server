@@ -11,7 +11,10 @@ const categorySchema=mongoose.Schema({
     },
     image:{
         type:String,
-        require:true,
+        required:true,
+    },
+    category_image_key:{
+        type:String,
     }
 },{timestamps:true})
 

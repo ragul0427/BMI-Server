@@ -16,6 +16,9 @@ const footerSchema=mongoose.Schema({
   image:{
    type:String,
    required:true
+  },
+  footer_image_key:{
+    type:String,
   }
 },{timestamps:true})
 

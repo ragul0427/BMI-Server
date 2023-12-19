@@ -13,7 +13,7 @@ const { webTokenMiddleware } = require("../middleWare/webMiddleware");
 router
   .post("/createproduct",upload.single("file"),createProduct)
   .get("/getproduct", getProduct)
-  .put("/updateproduct/:id", updateProduct)
+  .put("/updateproduct/:id",upload.single("file"), updateProduct)
   .delete("/deleteproduct/:id", deleteProduct);
 
   // Web

@@ -18,7 +18,7 @@ router
     createCategory
   )
   .get("/getcategory", getCategory)
-  .put("/updatecategory/:id", updateCategory)
+  .put("/updatecategory/:id",upload.single("file"), updateCategory)
   .delete("/deletecategory/:id", deleteCategory);
 
 // web
