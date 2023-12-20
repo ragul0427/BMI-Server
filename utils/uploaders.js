@@ -19,6 +19,25 @@ const ImageUploader = multer({
 	}),
 })
 
+const VideoUploader = multer({
+	fileFilter: (req, file, cb) => {
+		if (file.mimetype.startsWith('video/')) {
+			return cb(null, true)
+		}
+		return cb(null, false)
+	},
+	limits: {
+		fieldSize: 10 * 1024 * 1024,
+	},
+	storage: multer.diskStorage({
+		destination: './uploads',
+		filename: (req, file, cb) => {
+			const suffix = Date.now() + '-' + `${Math.random()}`.substring(2)
+			return cb(null, suffix + '-' + file.originalname)
+		},
+	}),
+})
+
 const PdfUploader = multer({
 	fileFilter: (req, file, cb) => {
 		if (file.mimetype.startsWith('application/pdf')) {
@@ -56,6 +75,7 @@ const FileUploader = multer({
 
 const uploaders = {
   ImageUploader,
+	VideoUploader,
   PdfUploader,
   FileUploader
 }
