@@ -1,6 +1,10 @@
 const product = require("../modals/productModal");
 const Cart = require("../modals/cart.models.js");
-const { uploadToCloud,deleteFileInCloud,deleteFileInLocal } = require("../helper/uploadToS3");
+const {
+  uploadToCloud,
+  deleteFileInCloud,
+  deleteFileInLocal,
+} = require("../helper/uploadToS3");
 const s3 = require("../helper/s3config");
 const fs = require("fs");
 const { isEmpty, get } = require("lodash");
@@ -21,14 +25,14 @@ const createProduct = async (req, res) => {
         name: req.body.name,
         status: req.body.status,
         discountPrice: req.body.discountPrice,
-        offer:req.body.offer,
+        offer: req.body.offer,
         price: req.body.price,
         categoryName: req.body.categoryName,
         subCategoryName: req.body.subCategoryName,
         categoryId: req.body.categoryId,
         subCategoryId: req.body.subCategoryId,
         image: data.Location,
-        product_image_key:data.key
+        product_image_key: data.key,
       });
       return res.status(200).send({ url: data.Location });
     });
@@ -49,7 +53,7 @@ const getProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    console.log(req.file,"file")
+    console.log(req.file, "file");
     if (get(req, "file", false)) {
       console.log("true", id, req.body);
       const result = uploadToCloud(req);
@@ -59,11 +63,11 @@ const updateProduct = async (req, res) => {
           return res.status(500).send(err);
         }
         deleteFileInLocal(file);
-       
+
         await product.findByIdAndUpdate(id, {
           name: req.body.name,
           status: req.body.status,
-          offer:req.body.offer,
+          offer: req.body.offer,
           discountPrice: req.body.discountPrice,
           price: req.body.price,
           categoryName: req.body.categoryName,
@@ -76,24 +80,20 @@ const updateProduct = async (req, res) => {
         deleteFileInCloud(get(req.body, "image_key"));
         return res.status(200).send({ Message: "data updated successfully" });
       });
-    }else {
-      console.log("false")
-      await product.findByIdAndUpdate(
-        id,
-        {
-          name: req.body.name,
-          status: req.body.status,
-          offer: req.body.offer,
-          price: req.body.price,
-          categoryName: req.body.categoryName,
-          subCategoryName: req.body.subCategoryName,
-          categoryId: req.body.categoryId,
-          subCategoryId: req.body.subCategoryId,
-          product_image_key: get(req, "body.image_key", ""),
-          image: get(req, "body.image", "") 
-        }
-      
-      );
+    } else {
+      console.log("false");
+      await product.findByIdAndUpdate(id, {
+        name: req.body.name,
+        status: req.body.status,
+        offer: req.body.offer,
+        price: req.body.price,
+        categoryName: req.body.categoryName,
+        subCategoryName: req.body.subCategoryName,
+        categoryId: req.body.categoryId,
+        subCategoryId: req.body.subCategoryId,
+        product_image_key: get(req, "body.image_key", ""),
+        image: get(req, "body.image", ""),
+      });
       return res.status(200).send({ Message: "created successfully" });
     }
   } catch (e) {
@@ -134,13 +134,15 @@ const addToCartFromProductDetails = async (req, res) => {
     }
 
     const result = await Cart.find(where);
-    if(isEmpty(result)){
+    
+    if (!isEmpty(result)) {
       return res.status(200).send({ data: "already exist" });
     }
+
     const resultcart = await Cart.create(where);
     return res.status(200).send({ data: resultcart });
   } catch (e) {
-    return res.status(500).send({ message: "Something went wrong"});
+    return res.status(500).send({ message: "Something went wrong" });
   }
 };
 
