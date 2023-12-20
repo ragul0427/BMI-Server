@@ -2,6 +2,7 @@ const Admin = require('../modals/adminUserModal')
 const jwt = require('jsonwebtoken')
 const DeliveryBoy = require('../modals/delivery-boy')
 const {validate} = require('super-easy-validator');
+const helpers = require('../utils/helpers')
 
 async function login(req, res) {
 	try {
@@ -69,7 +70,7 @@ async function getProfile(req, res) {
 	}
 }
 
-async function updateDeliveryBoy(req, res) {
+async function patchProfile(req, res) {
 	try {
 		const { password, firstName, lastName, phone, email, pinCode } = req.body
     const deliveryBoy = req.deliveryBoy;
@@ -101,7 +102,7 @@ async function updateDeliveryBoy(req, res) {
 	}
 }
 
-async function putDeliveryBoyDocuments(req, res) {
+async function putProfileDocuments(req, res) {
 	try {
 		const deliveryBoy = req.deliveryBoy
 		const aadharCard = req.files?.aadharCard?.[0]
@@ -109,12 +110,46 @@ async function putDeliveryBoyDocuments(req, res) {
 		const drivingLicense = req.files?.drivingLicense?.[0]
 		const photo = req.files?.photo?.[0]
 
-		deliveryBoy.password = password ?? deliveryBoy.password
-		deliveryBoy.firstName = firstName ?? deliveryBoy.firstName
-		deliveryBoy.lastName = lastName ?? deliveryBoy.lastName
-		deliveryBoy.phone = phone ?? deliveryBoy.phone
-		deliveryBoy.email = email ?? deliveryBoy.email
-		deliveryBoy.pinCode = pinCode ?? deliveryBoy.pinCode
+		if(aadharCard) {
+			const path = `delivery-boy/${deliveryBoy._id}/${aadharCard.filename}`
+			await helpers.uploadFile(aadharCard, path)
+			if(deliveryBoy.aadharCard) {
+				await helpers.deleteS3File(deliveryBoy.aadharCard)
+			}
+			deliveryBoy.aadharCard = helpers.getS3FileUrl(path)
+			helpers.deleteFile(aadharCard)
+		}
+
+		if(panCard) {
+			const path = `delivery-boy/${deliveryBoy._id}/${panCard.filename}`
+			await helpers.uploadFile(panCard, path)
+			if(deliveryBoy.panCard) {
+				await helpers.deleteS3File(deliveryBoy.panCard)
+			}
+			deliveryBoy.panCard = helpers.getS3FileUrl(path)
+			helpers.deleteFile(panCard)
+		}
+
+		if(drivingLicense) {
+			const path = `delivery-boy/${deliveryBoy._id}/${drivingLicense.filename}`
+			await helpers.uploadFile(drivingLicense, path)
+			if(deliveryBoy.drivingLicense) {
+				await helpers.deleteS3File(deliveryBoy.drivingLicense)
+			}
+			deliveryBoy.drivingLicense = helpers.getS3FileUrl(path)
+			helpers.deleteFile(drivingLicense)
+		}
+
+		if(photo) {
+			const path = `delivery-boy/${deliveryBoy._id}/${photo.filename}`
+			await helpers.uploadFile(photo, path)
+			if(deliveryBoy.photo) {
+				await helpers.deleteS3File(deliveryBoy.photo)
+			}
+			deliveryBoy.photo = helpers.getS3FileUrl(path)
+			helpers.deleteFile(photo)
+		}
+
 		await deliveryBoy.save()
 
 		return res.json({ message: 'Details updated successfully' })
@@ -127,8 +162,8 @@ const DeliveryBoyControllers = {
   createDeliveryBoy,
 	login,
   getProfile,
-  updateDeliveryBoy,
-  putDeliveryBoyDocuments
+  patchProfile,
+  putProfileDocuments
 }
 
 module.exports = DeliveryBoyControllers

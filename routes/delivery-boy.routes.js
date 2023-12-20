@@ -1,13 +1,30 @@
-const router = require("express").Router();
-const DeliveryBoyControllers = require('../controllers/delivery-boy.controller');
-const authorize = require('../middleWare/authorize');
+const router = require('express').Router()
+const DeliveryBoyControllers = require('../controllers/delivery-boy.controller')
+const authorize = require('../middleWare/authorize')
+const uploaders = require('../utils/uploaders')
 
-router.post('/', DeliveryBoyControllers.createDeliveryBoy);
+const {ImageUploader} = uploaders
 
-router.post('/login', DeliveryBoyControllers.login);
+router.post('/', DeliveryBoyControllers.createDeliveryBoy)
 
-router.get('/profile', authorize.authorizeDeliveryBoy, DeliveryBoyControllers.getProfile);
+router.post('/login', DeliveryBoyControllers.login)
 
-const DeliveryBoyRoutes = router;
+router.get('/', authorize.authorizeDeliveryBoy, DeliveryBoyControllers.getProfile)
 
-module.exports = DeliveryBoyRoutes;
+router.patch('/', authorize.authorizeDeliveryBoy, DeliveryBoyControllers.patchProfile)
+
+router.put(
+	'/',
+	authorize.authorizeDeliveryBoy,
+	ImageUploader.fields([
+		{ name: 'aadharCard', maxCount: 1 },
+		{ name: 'panCard', maxCount: 1 },
+		{ name: 'drivingLicense', maxCount: 1 },
+		{ name: 'photo', maxCount: 1 },
+	]),
+	DeliveryBoyControllers.putProfileDocuments
+)
+
+const DeliveryBoyRoutes = router
+
+module.exports = DeliveryBoyRoutes
