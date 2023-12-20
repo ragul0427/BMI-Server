@@ -125,22 +125,22 @@ const getProductDetails = async (req, res) => {
 const addToCartFromProductDetails = async (req, res) => {
   try {
     let where = {
-      userRef: _.get(req, "body.userDetails._id", ""),
-      productRef: _.get(req, "body.productRef", ""),
-      orderRef: _.get(req, "body.orderRef", ""),
+      userRef: get(req, "body.userDetails._id", ""),
+      productRef: get(req, "body.productRef", ""),
+      orderRef: get(req, "body.orderRef", ""),
     };
-    if (_.get(req, "body.bookingRef", "")) {
-      where.bookingRef = _.get(req, "body.bookingRef", "");
+    if (get(req, "body.bookingRef", "")) {
+      where.bookingRef = get(req, "body.bookingRef", "");
     }
 
     const result = await Cart.find(where);
-    if(!_.isEmpty(result)){
+    if(isEmpty(result)){
       return res.status(200).send({ data: "already exist" });
     }
     const resultcart = await Cart.create(where);
     return res.status(200).send({ data: resultcart });
   } catch (e) {
-    return res.status(500).send("Something went wrong");
+    return res.status(500).send({ message: "Something went wrong" , err : e});
   }
 };
 
