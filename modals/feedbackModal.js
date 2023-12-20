@@ -18,9 +18,6 @@ const feedbackSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    suggestions: {
-      type: String,
-    },
     options: {
       default: "no",
       type: String,
