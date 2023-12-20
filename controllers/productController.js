@@ -140,7 +140,7 @@ const addToCartFromProductDetails = async (req, res) => {
     const resultcart = await Cart.create(where);
     return res.status(200).send({ data: resultcart });
   } catch (e) {
-    return res.status(500).send({ message: "Something went wrong" , err : e});
+    return res.status(500).send({ message: "Something went wrong"});
   }
 };
 
