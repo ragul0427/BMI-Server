@@ -12,16 +12,32 @@ const s3 = require("../helper/s3config");
 
 const createCategory = async (req, res) => {
   try {
+    let maximumCategory=10;
+    const {name}=req.body
+    const categoryCount=await category.countDocuments({})
+    const existingCategory = await category.aggregate([
+      {
+        $match: {
+          name: { $eq: name }
+        }
+      }
+    ]);
+
+    if(existingCategory.length>0){
+      return res.status(400).send(`Cuisine with the name '${name}' already exists .`);
+    }
+
+    if (categoryCount >= maximumCategory) {
+      return res.status(400).send(`Your Cuisines limit reached. Cannot create more banners.`);
+    }
+    
     const result = uploadToCloud(req);
     s3.upload(result, async (err, data) => {
       const file = req.file;
       if (err) {
         return res.status(500).send(err);
       }
-      fs.unlink(file.path, (unlinkErr) => {
-        if (unlinkErr) {
-        }
-      });
+      deleteFileInLocal(file);
       await category.create({
         name: req.body.name,
         status: req.body.status,

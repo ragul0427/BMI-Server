@@ -10,16 +10,34 @@ const { get } = require("lodash");
 
 const createSubCategory = async (req, res) => {
   try {
+
+    let maximumSubCategory=10;
+    const {name}=req.body
+    const subCategoryCount=await subCategory.countDocuments({})
+    const existingCategory = await subCategory.aggregate([
+      {
+        $match: {
+          name: { $eq: name }
+        }
+      }
+    ]);
+
+    if(existingCategory.length>0){
+      return res.status(400).send(`Subcuisine with the name '${name}' already exists .`);
+    }
+
+    if (subCategoryCount >= maximumSubCategory) {
+      return res.status(400).send(`Your Subcuisine limit reached. Cannot create more banners.`);
+    }
+    
+
     const result = uploadToCloud(req);
     s3.upload(result, async (err, data) => {
       const file = req.file;
       if (err) {
         return res.status(500).send(err);
       }
-      fs.unlink(file.path, (unlinkErr) => {
-        if (unlinkErr) {
-        }
-      });
+      deleteFileInLocal(file);
       await subCategory.create({
         name:get(req.body, 'name', ''),
         status:get(req.body, 'status', ''),
@@ -62,7 +80,6 @@ const updateSubCategory = async (req, res) => {
           return res.status(500).send(err);
         }
         deleteFileInLocal(file);
-        console.log(data.Location);
         await subCategory.findByIdAndUpdate(id, {
           name: get(req.body, "name", ""),
           status: get(req.body, "status", ""),
@@ -76,10 +93,14 @@ const updateSubCategory = async (req, res) => {
       });
     } else {
       console.log("false");
+      console.log(req.body)
       await subCategory.findByIdAndUpdate(id, {
         name: get(req, "body.name", ""),
         status: get(req, "body.status", ""),
-        image: get(req, "body.image_key", ""),
+        categoryName: get(req.body, "categoryName", ""),
+        categoryId: get(req.body, "categoryId", ""),
+        image: get(req, "body.image", ""),
+        subcategory_image_key: get(req, "body.subcategory_image_key")
       });
       return res.status(200).send({ Message: "created successfully" });
     }
