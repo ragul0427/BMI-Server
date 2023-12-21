@@ -1,5 +1,4 @@
 const jwt=require("jsonwebtoken")
-const { model } = require("mongoose")
 
 const authenticateToken=(req,res,next)=>{
     const token=req.header("Authorization")?.split(" ")[1]
