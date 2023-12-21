@@ -2,10 +2,17 @@ const banner = require("../modals/bannerModal");
 const _ = require("lodash");
 const { uploadToCloud, deleteFileInLocal } = require("../helper/uploadToS3");
 const s3 = require("../helper/s3config");
-const fs = require("fs");
 
 const createbanner = async (req, res) => {
   try {
+    const { name } = req.body;
+    const bannerCount = await banner.countDocuments({ name });
+    let maxBannerLimit =name.toLowerCase().includes("advertisement") ? 7 : 5;
+
+    if (bannerCount >= maxBannerLimit) {
+      return res.status(400).send(`Your ${req.body.name} limit reached. Cannot create more banners.`);
+    }
+
     const result = uploadToCloud(req, 2);
     req.body.image = await Promise.all(
       result.map(async (res) => {
@@ -16,7 +23,7 @@ const createbanner = async (req, res) => {
         };
       })
     );
-   
+
     deleteFileInLocal(req, 2);
     const write = await banner.create(req.body);
     return res.status(200).send({ data: write });
@@ -62,11 +69,11 @@ const updatebanner = async (req, res) => {
     } else {
       req.body.image = [...r];
     }
- console.log(req.body);
+    console.log(req.body);
     const output = await banner.findByIdAndUpdate(id, req.body);
     return res.status(200).send({ data: output });
   } catch (e) {
-    console.log(e)
+    console.log(e);
     return res.status(500).send("Something went wrong while updating banner");
   }
 };

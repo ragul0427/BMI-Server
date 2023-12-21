@@ -3,20 +3,45 @@ const Cart = require("../modals/cart.models.js");
 const { uploadToCloud,deleteFileInCloud,deleteFileInLocal } = require("../helper/uploadToS3");
 const s3 = require("../helper/s3config");
 const fs = require("fs");
-const { isEmpty, get } = require("lodash");
+const { get } = require("lodash");
 
 const createProduct = async (req, res) => {
   try {
+    let maximumCuisines=500
+    let totalMenu=7
+    const {categoryName}=req.body;
+    const {name}=req.body;
+    const isCount=await product.countDocuments({categoryName})
+    const totalMenuCount=await product.countDocuments({})
+    
+    const existingMenu = await product.aggregate([
+      {
+        $match: {
+          name: { $eq: name }
+        }
+      }
+    ]);
+
+    if(existingMenu.length>0){
+      return res.status(400).send(`Menu with the name '${name}' already exists .`);
+    }
+
+    if (isCount >= maximumCuisines) {
+      return res.status(400).send(`Your ${categoryName} Menu limit reached. Cannot create more ${categoryName}.`);
+    }
+
+    if(totalMenuCount>=totalMenu){
+      return res.status(400).send(`Your can't add more than 500 Menu.`);
+    }
+  
+
     const result = uploadToCloud(req);
     s3.upload(result, async (err, data) => {
       const file = req.file;
       if (err) {
         return res.status(500).send(err);
       }
-      fs.unlink(file.path, (unlinkErr) => {
-        if (unlinkErr) {
-        }
-      });
+      deleteFileInLocal(file);
       await product.create({
         name: req.body.name,
         status: req.body.status,

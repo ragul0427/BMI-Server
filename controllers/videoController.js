@@ -6,7 +6,16 @@ const {get}=require("lodash")
 
 const createVideo = async (req, res) => {
   try {
+    const {name}=req.body
+    const videoCount = await video.countDocuments({ name }); 
+    let maxVideoLimit =name.toLowerCase().includes("bromag") ? 2 : 3;
     const result = uploadToCloud(req);
+
+    
+    if (videoCount >= maxVideoLimit) {
+      return res.status(400).send(`Your ${name} video limit reached. Cannot create more videos.`);
+    }
+
     s3.upload(result, async (err, data) => {
       const file = req.file;
       if (err) {
