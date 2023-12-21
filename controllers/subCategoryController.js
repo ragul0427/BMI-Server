@@ -10,12 +10,12 @@ const { get } = require("lodash");
 
 const createSubCategory = async (req, res) => {
   try {
+    const maximumCount=10
+    const {categoryName}=req.body;
+    const subCategoryCount=await subCategory.countDocuments({categoryName})
 
-    let maximumSubCategory=10;
-    const subCategoryCount=await subCategory.countDocuments({})
-
-    if (subCategoryCount >= maximumSubCategory) {
-      return res.status(400).send(`Your Subcuisine limit reached. Cannot create more banners.`);
+    if (subCategoryCount >= maximumCount) {
+      return res.status(400).send(`Your ${categoryName} limit reached. Cannot create more ${categoryName}.`);
     }
     
 

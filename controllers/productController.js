@@ -12,7 +12,7 @@ const { get } = require("lodash");
 const createProduct = async (req, res) => {
   try {
     let maximumCuisines=500
-    let totalMenu=10
+    let totalMenu=50
     const {categoryName}=req.body;
     const {name}=req.body;
     const isCount=await product.countDocuments({categoryName})
