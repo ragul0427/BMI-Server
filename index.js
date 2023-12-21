@@ -34,6 +34,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
