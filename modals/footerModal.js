@@ -10,18 +10,11 @@ const footerSchema = mongoose.Schema(
         footer_image_key: String,
       },
     ],
-    logo: {
-      type: String,
-    },
-    contactNumber: {
-      type: Number,
-    },
-    address: {
-      type: Number,
-    },
-    email: {
-      type: String,
-    },
+    logo: String,
+    contactNumber:String,
+    address:String,
+    email: String,
+    logo_image_key:String
   },
   { timestamps: true }
 );

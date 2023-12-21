@@ -26,11 +26,11 @@ const createProduct = async (req, res) => {
       return res.status(400).send(`Menu with the name '${name}' already exists .`);
     }
 
-    if (isCount >= maximumCuisines) {
+    if (isCount >= totalMenu) {
       return res.status(400).send(`Your ${categoryName} Menu limit reached. Cannot create more ${categoryName}.`);
     }
 
-    if(totalMenuCount>=totalMenu){
+    if(totalMenuCount>=maximumCuisines){
       return res.status(400).send(`Your can't add more than 500 Menu.`);
     }
   
