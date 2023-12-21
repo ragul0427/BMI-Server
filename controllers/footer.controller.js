@@ -10,28 +10,28 @@ const s3 = require("../helper/s3config");
 const createFooter=async(req,res)=>{
   try{
     const isFooter=await footer.find({})
-    console.log(isFooter._id)
+    // console.log(isFooter._id)
 
-    if(!isEmpty(isFooter)){
+    // if(!isEmpty(isFooter)){
      
-    }
-    // const result = uploadToCloud(req);
-    // s3.upload(result, async (err, data) => {
-    //   const file = req.file;
-    //   if (err) {
-    //     return res.status(500).send(err);
-    //   }
-    //   deleteFileInLocal(file);
-    //   await footer.create({
-    //     name: get(req,"body.name"),
-    //     email: get(req,"body.email"),
-    //     contactNumber: get(req,"body.email"),
-    //     address: get(req,"body.address"),
-    //     logo: data.Location,
-    //     logo_image_key: data.key,
-    //   });
-    //   return res.status(200).send({ url: data.Location });
-    // });
+    // }
+    const result = uploadToCloud(req);
+    s3.upload(result, async (err, data) => {
+      const file = req.file;
+      if (err) {
+        return res.status(500).send(err);
+      }
+      deleteFileInLocal(file);
+      await footer.create({
+        name: get(req,"body.name"),
+        email: get(req,"body.email"),
+        contactNumber: get(req,"body.number"),
+        address: get(req,"body.address"),
+        logo: data.Location,
+        logo_image_key: data.key,
+      });
+      return res.status(200).send({ url: data.Location });
+    });
    
   }catch(err){
 console.log(err)

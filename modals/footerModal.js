@@ -10,6 +10,7 @@ const footerSchema = mongoose.Schema(
         footer_image_key: String,
       },
     ],
+    name:String,
     logo: String,
     contactNumber:String,
     address:String,
