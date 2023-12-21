@@ -12,19 +12,7 @@ const createSubCategory = async (req, res) => {
   try {
 
     let maximumSubCategory=10;
-    const {name}=req.body
     const subCategoryCount=await subCategory.countDocuments({})
-    const existingCategory = await subCategory.aggregate([
-      {
-        $match: {
-          name: { $eq: name }
-        }
-      }
-    ]);
-
-    if(existingCategory.length>0){
-      return res.status(400).send(`Subcuisine with the name '${name}' already exists .`);
-    }
 
     if (subCategoryCount >= maximumSubCategory) {
       return res.status(400).send(`Your Subcuisine limit reached. Cannot create more banners.`);
