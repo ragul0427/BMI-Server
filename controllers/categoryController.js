@@ -1,53 +1,55 @@
 const { get } = require("lodash");
 const category = require("../modals/categoryModal");
 const subCategory = require("../modals/subCategoryModal");
-const fs = require("fs");
 const Product = require("../modals/productModal");
-const {
-  uploadToCloud,
-  deleteFileInCloud,
-  deleteFileInLocal,
-} = require("../helper/uploadToS3");
-const s3 = require("../helper/s3config");
+const helpers = require("../utils/helpers");
+const { v4: uuidv4 } = require("uuid");
 
 const createCategory = async (req, res) => {
   try {
-    let maximumCategory=10;
-    const {name}=req.body
-    const categoryCount=await category.countDocuments({})
+    let maximumCategory = 10;
+    const { name } = req.body;
+    const categoryCount = await category.countDocuments({});
     const existingCategory = await category.aggregate([
       {
         $match: {
-          name: { $eq: name }
-        }
-      }
+          name: { $eq: name },
+        },
+      },
     ]);
 
-    if(existingCategory.length>0){
-      return res.status(400).send(`Cuisine with the name '${name}' already exists .`);
+    if (existingCategory.length > 0) {
+      return res
+        .status(400)
+        .send(`Cuisine with the name '${name}' already exists .`);
     }
 
     if (categoryCount >= maximumCategory) {
-      return res.status(400).send(`Your Cuisines limit reached. Cannot create more banners.`);
+      return res
+        .status(400)
+        .send(`Your Cuisines limit reached. Cannot create more Cusines.`);
     }
-    
-    const result = uploadToCloud(req,"cuisines");
-    s3.upload(result, async (err, data) => {
-      const file = req.file;
-      if (err) {
-        return res.status(500).send(err);
+
+    const cuisinePhto = req.file;
+    if (cuisinePhto) {
+      const path = `Cuisines/${uuidv4()}/${cuisinePhto.filename}`;
+      await helpers.uploadFile(cuisinePhto, path);
+      if (path) {
+        await helpers.deleteS3File(path);
       }
-      deleteFileInLocal(file);
+      const image = helpers.getS3FileUrl(path);
+      helpers.deleteFile(cuisinePhto);
       await category.create({
         name: req.body.name,
         status: req.body.status,
-        image: data.Location,
-        category_image_key: data.key,
+        image: image,
       });
-      return res.status(200).send({ url: data.Location });
-    });
+
+      return res.status(200).send({ message: "Cusines created successfully" });
+    }
   } catch (err) {
-    return res.status(500).send("Something went wrong while creating category");
+    console.log(err);
+    return res.status(500).send("Something went wrong while creating Cusines");
   }
 };
 
@@ -56,53 +58,54 @@ const getCategory = async (req, res) => {
     const result = await category.find({});
     return res.status(200).send({ data: result });
   } catch (e) {
-    return res.status(500).send("Something went wrong while fetching category");
+    return res.status(500).send("Something went wrong while fetching Cusines");
   }
 };
 
 const updateCategory = async (req, res) => {
   const { id } = req.params;
   try {
+    const imageUrl=req.body.image
     if (get(req, "file", false)) {
-      console.log("true", id, req.body);
-      const result = uploadToCloud(req,"cuisines");
-      s3.upload(result, async (err, data) => {
-        const file = req.file;
-        if (err) {
-          return res.status(500).send(err);
+      const cuisinePhto = req.file;
+      if (cuisinePhto) {
+        const path = `Cuisines/${uuidv4()}/${cuisinePhto.filename}`;
+        await helpers.uploadFile(cuisinePhto, path);
+        if (imageUrl) {
+          await helpers.deleteS3File(imageUrl);
         }
-        deleteFileInLocal(file);
-        console.log(data.Location);
-        await category.findByIdAndUpdate(id, {
-          name: get(req.body, "name", ""),
-          status: get(req.body, "status", ""),
-          image: data.Location,
-          category_image_key: data.key,
+        const image = helpers.getS3FileUrl(path);
+        helpers.deleteFile(cuisinePhto);
+        await category.findByIdAndUpdate(id,{
+          name: req.body.name,
+          status: req.body.status,
+          image: image,
         });
-        deleteFileInCloud(get(req.body, "image_key"));
-        return res.status(200).send({ Message: "data updated successfully" });
-      });
+
+        return res
+          .status(200)
+          .send({ message: "Cusines updated successfully" });
+      }
     } else {
       console.log("false");
       await category.findByIdAndUpdate(id, {
         name: get(req, "body.name", ""),
         status: get(req, "body.status", ""),
         image: get(req, "body.image", ""),
-        category_image_key: get(req, "body.image_key"),
       });
-      return res.status(200).send({ Message: "created successfully" });
+      return res.status(200).send({ Message: "Cusines updated successfully" });
     }
   } catch (e) {
-    return res.status(500).send("Something went wrong while updating category");
+    return res.status(500).send("Something went wrong while updating Cusines");
   }
 };
 
 const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(get(req.body, "image"), "image");
+    const { image } = req.body;
     await category.findByIdAndDelete(id);
-    deleteFileInCloud(get(req.body, "image"));
+    await helpers.deleteS3File(image);
     return res.status(200).send("Category deleted");
   } catch (e) {
     return res.status(500).send("Something went wrong while deleting category");

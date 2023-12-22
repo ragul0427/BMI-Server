@@ -9,9 +9,7 @@ const videoSchema = mongoose.Schema({
         type:String,
         required:true,
     },
-    video_key:{
-        type:String,
-    }
+ 
 },{timestamps:true})
 
 module.exports=mongoose.model("video",videoSchema)

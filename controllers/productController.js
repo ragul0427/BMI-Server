@@ -8,6 +8,8 @@ const {
 const s3 = require("../helper/s3config");
 const fs = require("fs");
 const { get } = require("lodash");
+const { v4: uuidv4 } = require("uuid");
+const helpers = require("../utils/helpers");
 
 const createProduct = async (req, res) => {
   try {
@@ -38,15 +40,16 @@ const createProduct = async (req, res) => {
       return res.status(400).send(`Your can't add more than 500 Menu.`);
     }
   
-
-    const result = uploadToCloud(req,"menu");
-    s3.upload(result, async (err, data) => {
-      const file = req.file;
-      if (err) {
-        return res.status(500).send(err);
+    const menu = req.file;
+    if (menu) {
+      const path = `Menu/${uuidv4()}/${menu.filename}`;
+      await helpers.uploadFile(menu, path);
+      if (path) {
+        await helpers.deleteS3File(path);
       }
-      deleteFileInLocal(file);
-      await product.create({
+      const image=helpers.getS3FileUrl(path)
+      helpers.deleteFile(menu);
+      const result=await product.create({
         name: req.body.name,
         status: req.body.status,
         discountPrice: req.body.discountPrice,
@@ -56,11 +59,12 @@ const createProduct = async (req, res) => {
         subCategoryName: req.body.subCategoryName,
         categoryId: req.body.categoryId,
         subCategoryId: req.body.subCategoryId,
-        image: data.Location,
-        product_image_key: data.key,
+        image: image
       });
-      return res.status(200).send({ url: data.Location });
-    });
+      console.log(result,"result")  
+      return res.status(200).send({message:"Menu created successfully"});
+     
+    }
   } catch (err) {
     return res.status(500).send("Something went wrong while creating products");
   }
@@ -78,33 +82,34 @@ const getProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    console.log(req.file, "file");
+    const imageUrl=req.body.image
     if (get(req, "file", false)) {
-      console.log("true", id, req.body);
-      const result = uploadToCloud(req,"menu");
-      s3.upload(result, async (err, data) => {
-        const file = req.file;
-        if (err) {
-          return res.status(500).send(err);
+      const menu = req.file;
+      if (menu) {
+        const path = `SubCuisines/${uuidv4()}/${menu.filename}`;
+        await helpers.uploadFile(menu, path);
+        if (imageUrl) {
+          await helpers.deleteS3File(imageUrl);
         }
-        deleteFileInLocal(file);
-
-        await product.findByIdAndUpdate(id, {
+        const image = helpers.getS3FileUrl(path);
+        helpers.deleteFile(menu);
+        await product.findByIdAndUpdate(id,{
           name: req.body.name,
           status: req.body.status,
-          offer: req.body.offer,
           discountPrice: req.body.discountPrice,
+          offer: req.body.offer,
           price: req.body.price,
           categoryName: req.body.categoryName,
           subCategoryName: req.body.subCategoryName,
           categoryId: req.body.categoryId,
           subCategoryId: req.body.subCategoryId,
-          image: data.Location,
-          product_image_key: data.key,
-        });
-        deleteFileInCloud(get(req.body, "image_key"));
-        return res.status(200).send({ Message: "data updated successfully" });
-      });
+          image: image
+        })  
+
+        return res
+          .status(200)
+          .send({ message: "Cusines updated successfully" });
+      }
     } else {
       console.log("false");
       await product.findByIdAndUpdate(id, {
@@ -122,6 +127,7 @@ const updateProduct = async (req, res) => {
       return res.status(200).send({ Message: "created successfully" });
     }
   } catch (e) {
+    console.log(e)
     return res.status(500).send("Something went wrong while updating product");
   }
 };
@@ -129,8 +135,9 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
+    const {image}=req.body
     await product.findByIdAndDelete(id);
-    deleteFileInCloud(get(req.body, "image"));
+    await helpers.deleteS3File(image);
     return res.status(200).send("Category deleted");
   } catch (e) {
     return res.status(500).send("Something went wrong while delete product");

@@ -21,9 +21,7 @@ const subCategorySchema = mongoose.Schema({
     type:String,
     required:true,
   },
-  subcategory_image_key:{
-    type:String,
-}
+ 
 });
 
 module.exports=mongoose.model('subcategory',subCategorySchema)

@@ -3,37 +3,39 @@ const { uploadToCloud,deleteFileInCloud,deleteFileInLocal } = require("../helper
 const s3 = require("../helper/s3config");
 const fs = require("fs");
 const {get}=require("lodash")
+const helpers = require("../utils/helpers");
+const { v4: uuidv4 } = require("uuid");
 
 const createVideo = async (req, res) => {
   try {
     const {name}=req.body
     const videoCount = await video.countDocuments({ name }); 
     let maxVideoLimit =name.toLowerCase().includes("bromag") ? 2 : 3;
-   
-
-    
+  
     if (videoCount >= maxVideoLimit) {
       return res.status(400).send(`Your ${name} video limit reached. Cannot create more videos.`);
     }
-    const result = uploadToCloud(req,"videos");
-    s3.upload(result, async (err, data) => {
-      const file = req.file;
-      if (err) {
-        return res.status(500).send(err);
-      }
-      fs.unlink(file.path, (unlinkErr) => {
-        if (unlinkErr) {
-        }
-      });
-      await video.create({
-        name: req.body.name,
-        video: data.Location,
-        video_key: data.key,
-      });
-      return res.status(200).send({ url: data.Location });
-    });
+   
+    const videoFile = req.file;
+    console.log(videoFile,"file")
+    // if (videoFile) {
+    //   const path = `Videos/${uuidv4()}/${videoFile.filename}`;
+    //   await helpers.uploadFile(videoFile, path);
+    //   if (path) {
+    //     await helpers.deleteS3File(path);
+    //   }
+    //   const vdo=helpers.getS3FileUrl(path)
+    //   helpers.deleteFile(videoFile);
+    //   await video.create({
+    //     name: req.body.name,
+    //     video: vdo,
+    //   });
+    //   return res.status(200).send({message:"Video created successfully"});
+     
+    // }
    
   } catch (err) {
+    console.log(err)
     return res.status(500).send("Something went wrong while creating video");
   }
 };
