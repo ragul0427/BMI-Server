@@ -15,13 +15,35 @@ const DeliveryBoySchema = mongoose.Schema(
 		phone: String,
 		email: String,
 		pinCode: String,
-		aadharCard: String,
-		panCard: String,
-		drivingLicense: String,
+		aadharFront: String,
+		aadharBack: String,
+		panFront: String,
+		panBack: String,
+		rcFront: String,
+		rcBack: String,
+		drivingLicenseFront: String,
+		drivingLicenseBack: String,
+		insuranceFront: String,
+		insuranceBack: String,
+		bikePhotoFront: String,
+		bikePhotoBack: String,
+		bikeOutwardVideo: String,
+		aadharBack: String,
     photo: String,
+		location: {
+			type: {
+				type: String,
+				enum: ['Point'],
+			},
+			coordinates: {
+				type: [Number], // [longitude, latitude]
+			},
+		},
 	},
 	{ timestamps: true, versionKey: false }
 )
+
+DeliveryBoySchema.index({ location: '2dsphere' })
 
 const DeliveryBoy = mongoose.model('DeliveryBoy', DeliveryBoySchema, 'delivery_boys')
 

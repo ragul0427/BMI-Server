@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken')
 const DeliveryBoy = require('../modals/delivery-boy')
 const {validate} = require('super-easy-validator');
 const helpers = require('../utils/helpers')
+const CallOrder=  require('../modals/callForOrder')
+const OnlineOrder=  require('../modals/onlineOrderModal')
 
 async function login(req, res) {
 	try {
@@ -72,7 +74,7 @@ async function getProfile(req, res) {
 
 async function patchProfile(req, res) {
 	try {
-		const { password, firstName, lastName, phone, email, pinCode } = req.body
+		const { password, firstName, lastName, phone, email, pinCode, coordinates } = req.body
     const deliveryBoy = req.deliveryBoy;
 
     const rules = {
@@ -81,7 +83,8 @@ async function patchProfile(req, res) {
       lastName: 'optional|name',
       phone: 'optional|regex:/^[0-9]{10}$/',
       email: 'optional|email',
-      pinCode: 'optional|string|natural|size:6'
+      pinCode: 'optional|string|natural|size:6',
+			coordinates: 'optional|array|size:2|arrayof:number',
     }
     const {errors} = validate(rules, req.body)
 		if (errors) {
@@ -94,6 +97,9 @@ async function patchProfile(req, res) {
     deliveryBoy.phone = phone ?? deliveryBoy.phone;
     deliveryBoy.email = email ?? deliveryBoy.email;
     deliveryBoy.pinCode = pinCode ?? deliveryBoy.pinCode;
+		if(coordinates) {
+			deliveryBoy.location = { type: 'Point', coordinates }
+		}
     await deliveryBoy.save();
 
 		return res.json({ message: 'Details updated successfully' })
@@ -105,39 +111,119 @@ async function patchProfile(req, res) {
 async function putProfileDocuments(req, res) {
 	try {
 		const deliveryBoy = req.deliveryBoy
-		const aadharCard = req.files?.aadharCard?.[0]
-		const panCard = req.files?.panCard?.[0]
-		const drivingLicense = req.files?.drivingLicense?.[0]
+
+		const aadharFront = req.files?.aadharFront?.[0]
+		const aadharBack = req.files?.aadharBack?.[0]
+		const panFront = req.files?.panFront?.[0]
+		const panBack = req.files?.panBack?.[0]
+		const rcFront = req.files?.rcFront?.[0]
+		const rcBack = req.files?.rcBack?.[0]
+		const drivingLicenseFront = req.files?.drivingLicenseFront?.[0]
+		const drivingLicenseBack = req.files?.drivingLicenseBack?.[0]
+		const insuranceFront = req.files?.insuranceFront?.[0]
+		const insuranceBack = req.files?.insuranceBack?.[0]
+		const bikePhotoFront = req.files?.bikePhotoFront?.[0]
+		const bikePhotoBack = req.files?.bikePhotoBack?.[0]
 		const photo = req.files?.photo?.[0]
 
-		if(aadharCard) {
-			const path = `delivery-boy/${deliveryBoy._id}/${aadharCard.filename}`
-			await helpers.uploadFile(aadharCard, path)
-			if(deliveryBoy.aadharCard) {
-				await helpers.deleteS3File(deliveryBoy.aadharCard)
+		if(aadharFront) {
+			const path = `delivery-boy/${deliveryBoy._id}/${aadharFront.filename}`
+			await helpers.uploadFile(aadharFront, path)
+			if(deliveryBoy.aadharFront) {
+				await helpers.deleteS3File(deliveryBoy.aadharFront)
 			}
-			deliveryBoy.aadharCard = helpers.getS3FileUrl(path)
-			helpers.deleteFile(aadharCard)
+			deliveryBoy.aadharFront = helpers.getS3FileUrl(path)
+			helpers.deleteFile(aadharFront)
 		}
 
-		if(panCard) {
-			const path = `delivery-boy/${deliveryBoy._id}/${panCard.filename}`
-			await helpers.uploadFile(panCard, path)
-			if(deliveryBoy.panCard) {
-				await helpers.deleteS3File(deliveryBoy.panCard)
+		if(aadharBack) {
+			const path = `delivery-boy/${deliveryBoy._id}/${aadharBack.filename}`
+			await helpers.uploadFile(aadharBack, path)
+			if(deliveryBoy.aadharBack) {
+				await helpers.deleteS3File(deliveryBoy.aadharBack)
 			}
-			deliveryBoy.panCard = helpers.getS3FileUrl(path)
-			helpers.deleteFile(panCard)
+			deliveryBoy.aadharBack = helpers.getS3FileUrl(path)
+			helpers.deleteFile(aadharBack)
 		}
 
-		if(drivingLicense) {
-			const path = `delivery-boy/${deliveryBoy._id}/${drivingLicense.filename}`
-			await helpers.uploadFile(drivingLicense, path)
-			if(deliveryBoy.drivingLicense) {
-				await helpers.deleteS3File(deliveryBoy.drivingLicense)
+		if(panFront) {
+			const path = `delivery-boy/${deliveryBoy._id}/${panFront.filename}`
+			await helpers.uploadFile(panFront, path)
+			if(deliveryBoy.panFront) {
+				await helpers.deleteS3File(deliveryBoy.panFront)
 			}
-			deliveryBoy.drivingLicense = helpers.getS3FileUrl(path)
-			helpers.deleteFile(drivingLicense)
+			deliveryBoy.panFront = helpers.getS3FileUrl(path)
+			helpers.deleteFile(panFront)
+		}
+
+		if(panBack) {
+			const path = `delivery-boy/${deliveryBoy._id}/${panBack.filename}`
+			await helpers.uploadFile(panBack, path)
+			if(deliveryBoy.panBack) {
+				await helpers.deleteS3File(deliveryBoy.panBack)
+			}
+			deliveryBoy.panBack = helpers.getS3FileUrl(path)
+			helpers.deleteFile(panBack)
+		}
+
+		if(rcFront) {
+			const path = `delivery-boy/${deliveryBoy._id}/${rcFront.filename}`
+			await helpers.uploadFile(rcFront, path)
+			if(deliveryBoy.rcFront) {
+				await helpers.deleteS3File(deliveryBoy.rcFront)
+			}
+			deliveryBoy.rcFront = helpers.getS3FileUrl(path)
+			helpers.deleteFile(rcFront)
+		}
+
+		if(rcBack) {
+			const path = `delivery-boy/${deliveryBoy._id}/${rcBack.filename}`
+			await helpers.uploadFile(rcBack, path)
+			if(deliveryBoy.rcBack) {
+				await helpers.deleteS3File(deliveryBoy.rcBack)
+			}
+			deliveryBoy.rcBack = helpers.getS3FileUrl(path)
+			helpers.deleteFile(rcBack)
+		}
+
+		if(drivingLicenseFront) {
+			const path = `delivery-boy/${deliveryBoy._id}/${drivingLicenseFront.filename}`
+			await helpers.uploadFile(drivingLicenseFront, path)
+			if(deliveryBoy.drivingLicenseFront) {
+				await helpers.deleteS3File(deliveryBoy.drivingLicenseFront)
+			}
+			deliveryBoy.drivingLicenseFront = helpers.getS3FileUrl(path)
+			helpers.deleteFile(drivingLicenseFront)
+		}
+
+		if(drivingLicenseBack) {
+			const path = `delivery-boy/${deliveryBoy._id}/${drivingLicenseBack.filename}`
+			await helpers.uploadFile(drivingLicenseBack, path)
+			if(deliveryBoy.drivingLicenseBack) {
+				await helpers.deleteS3File(deliveryBoy.drivingLicenseBack)
+			}
+			deliveryBoy.drivingLicenseBack = helpers.getS3FileUrl(path)
+			helpers.deleteFile(drivingLicenseBack)
+		}
+
+		if(insuranceFront) {
+			const path = `delivery-boy/${deliveryBoy._id}/${insuranceFront.filename}`
+			await helpers.uploadFile(insuranceFront, path)
+			if(deliveryBoy.insuranceFront) {
+				await helpers.deleteS3File(deliveryBoy.insuranceFront)
+			}
+			deliveryBoy.insuranceFront = helpers.getS3FileUrl(path)
+			helpers.deleteFile(insuranceFront)
+		}
+
+		if(insuranceBack) {
+			const path = `delivery-boy/${deliveryBoy._id}/${insuranceBack.filename}`
+			await helpers.uploadFile(insuranceBack, path)
+			if(deliveryBoy.insuranceBack) {
+				await helpers.deleteS3File(deliveryBoy.insuranceBack)
+			}
+			deliveryBoy.insuranceBack = helpers.getS3FileUrl(path)
+			helpers.deleteFile(insuranceBack)
 		}
 
 		if(photo) {
@@ -150,9 +236,85 @@ async function putProfileDocuments(req, res) {
 			helpers.deleteFile(photo)
 		}
 
+		if(bikePhotoFront) {
+			const path = `delivery-boy/${deliveryBoy._id}/${bikePhotoFront.filename}`
+			await helpers.uploadFile(bikePhotoFront, path)
+			if(deliveryBoy.bikePhotoFront) {
+				await helpers.deleteS3File(deliveryBoy.bikePhotoFront)
+			}
+			deliveryBoy.bikePhotoFront = helpers.getS3FileUrl(path)
+			helpers.deleteFile(bikePhotoFront)
+		}
+
+		if(bikePhotoBack) {
+			const path = `delivery-boy/${deliveryBoy._id}/${bikePhotoBack.filename}`
+			await helpers.uploadFile(bikePhotoBack, path)
+			if(deliveryBoy.bikePhotoBack) {
+				await helpers.deleteS3File(deliveryBoy.bikePhotoBack)
+			}
+			deliveryBoy.bikePhotoBack = helpers.getS3FileUrl(path)
+			helpers.deleteFile(bikePhotoBack)
+		}
+
 		await deliveryBoy.save()
 
 		return res.json({ message: 'Details updated successfully' })
+	} catch (error) {
+		console.error(error)
+	}
+}
+
+async function putBikeVideos(req, res) {
+	try {
+		const deliveryBoy = req.deliveryBoy
+
+		const bikeInwardVideo = req.files?.bikeInwardVideo?.[0]
+		const bikeOutwardVideo = req.files?.bikeOutwardVideo?.[0]
+
+		if(bikeInwardVideo) {
+			const path = `delivery-boy/${deliveryBoy._id}/${bikeInwardVideo.filename}`
+			await helpers.uploadFile(bikeInwardVideo, path)
+			if(deliveryBoy.bikeInwardVideo) {
+				await helpers.deleteS3File(deliveryBoy.bikeInwardVideo)
+			}
+			deliveryBoy.bikeInwardVideo = helpers.getS3FileUrl(path)
+			helpers.deleteFile(bikeInwardVideo)
+		}
+
+		if(bikeOutwardVideo) {
+			const path = `delivery-boy/${deliveryBoy._id}/${bikeOutwardVideo.filename}`
+			await helpers.uploadFile(bikeOutwardVideo, path)
+			if(deliveryBoy.bikeOutwardVideo) {
+				await helpers.deleteS3File(deliveryBoy.bikeOutwardVideo)
+			}
+			deliveryBoy.bikeOutwardVideo = helpers.getS3FileUrl(path)
+			helpers.deleteFile(bikeOutwardVideo)
+		}
+
+		await deliveryBoy.save()
+
+		return res.json({ message: 'Details updated successfully' })
+	} catch (error) {
+		console.error(error)
+	}
+}
+
+async function getOrders(req, res) {
+	try {
+		const {createdAtMin, createdAtMax} = req.query;
+    const deliveryBoy = req.deliveryBoy;
+
+		const query = {}
+		if(createdAtMin) {
+			query.$gte = new Date(createdAtMin)
+		}
+		if(createdAtMax) {
+			query.$lte = new Date(createdAtMax)
+		}
+		const callOrders = await CallOrder.find({deliveryStatus: 'delivery', ...query})
+		const onlineOrders = await OnlineOrder.find(query)
+
+		return res.json({callOrders, onlineOrders})
 	} catch (error) {
 		console.error(error)
 	}
@@ -163,7 +325,9 @@ const DeliveryBoyControllers = {
 	login,
   getProfile,
   patchProfile,
-  putProfileDocuments
+  putProfileDocuments,
+  putBikeVideos,
+	getOrders
 }
 
 module.exports = DeliveryBoyControllers
