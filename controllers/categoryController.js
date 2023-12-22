@@ -31,6 +31,7 @@ const createCategory = async (req, res) => {
     }
 
     const cuisinePhto = req.file;
+    
     if (cuisinePhto) {
       const path = `Cuisines/${uuidv4()}/${cuisinePhto.filename}`;
       await helpers.uploadFile(cuisinePhto, path);

@@ -8,12 +8,12 @@ const {
 } = require("../controllers/videoController");
 const uploaders = require('../utils/uploaders')
 
-const {ImageUploader} = uploaders
+const {VideoUploader} = uploaders
 
 router
-  .post("/createvideo",ImageUploader.single("file"),createVideo)
+  .post("/createvideo",VideoUploader.single("file"),createVideo)
   .get("/getvideo", getVideo)
-  .put("/updatevideo/:id",ImageUploader.single("file"), updateVideo)
+  .put("/updatevideo/:id",VideoUploader.single("file"), updateVideo)
   .delete("/deletevideo/:id", deleteVideo);
 
 module.exports = router;

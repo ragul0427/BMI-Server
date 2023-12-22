@@ -2,36 +2,53 @@ const banner = require("../modals/bannerModal");
 const _ = require("lodash");
 const { uploadToCloud, deleteFileInLocal } = require("../helper/uploadToS3");
 const s3 = require("../helper/s3config");
+const helpers = require("../utils/helpers");
+const { v4: uuidv4 } = require("uuid");
 
 const createbanner = async (req, res) => {
   try {
     const { name } = req.body;
     const bannerCount = await banner.countDocuments({ name });
-    let maxBannerLimit =name.toLowerCase().includes("advertisement") ? 7 : 5;
+    let maxBannerLimit = name.toLowerCase().includes("advertisement") ? 7 : 5;
 
     if (bannerCount >= maxBannerLimit) {
       return res.status(400).send(`Your ${req.body.name} limit reached. Cannot create more banners.`);
     }
 
-    const result = uploadToCloud(req, 2);
-    req.body.image = await Promise.all(
-      result.map(async (res) => {
-        let data = await s3.upload(res).promise();
-        return {
-          url: data.Location,
-          key: data.Key,
-        };
-      })
-    );
+    const banners = req.files?.banner ?? [];
 
-    deleteFileInLocal(req, 2);
-    const write = await banner.create(req.body);
-    return res.status(200).send({ data: write });
+    if (banners.length > 0) {
+      const uploadedImagePaths = [];
+
+      for (const bannerFile of banners) {
+        const imagePath = `${name}/${uuidv4()}/${bannerFile.filename}`;
+        await helpers.uploadFile(bannerFile, imagePath);
+        uploadedImagePaths.push(imagePath);
+      }
+
+      const bannerImages = uploadedImagePaths.map(path => helpers.getS3FileUrl(path));
+
+      banners.forEach((bannerFile) => {
+        helpers.deleteFile(bannerFile);
+      });
+
+      await banner.create({
+        name: _.get(req, "body.name"),
+        productId: _.get(req, "body.productId", ""),
+        content: _.get(req, "body.content", ""),
+        image:bannerImages,
+      });
+
+      return res.status(200).send({ message: `${name} created successfully with ${banners.length} banners` });
+    }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).send("Something went wrong while creating banner");
   }
 };
+
+
+
 
 const getbanner = async (req, res) => {
   try {
@@ -52,26 +69,32 @@ const updatebanner = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const result = uploadToCloud(req, 2);
-    const r = await Promise.all(
-      result.map(async (res) => {
-        let data = await s3.upload(res).promise();
-        return {
-          url: data.Location,
-          key: data.Key,
-        };
-      })
-    );
-    deleteFileInLocal(req, 2);
+    const banners = req.files?.banner ?? [];
+    console.log(req.body.image.split(","))
+    // if (banners.length > 0) {
+    //   const uploadedImagePaths = [];
 
-    if (_.get(req, "body.rest", false)) {
-      req.body.image = [...r, ...JSON.parse(req.body.rest)];
-    } else {
-      req.body.image = [...r];
-    }
-    console.log(req.body);
-    const output = await banner.findByIdAndUpdate(id, req.body);
-    return res.status(200).send({ data: output });
+    //   for (const bannerFile of banners) {
+    //     const imagePath = `${name}/${uuidv4()}/${bannerFile.filename}`;
+    //     await helpers.uploadFile(bannerFile, imagePath);
+    //     uploadedImagePaths.push(imagePath);
+    //   }
+
+    //   const bannerImages = uploadedImagePaths.map(path => helpers.getS3FileUrl(path));
+
+    //   banners.forEach((bannerFile) => {
+    //     helpers.deleteFile(bannerFile);
+    //   });
+
+    //   await banner.create({
+    //     name: _.get(req, "body.name"),
+    //     productId: _.get(req, "body.productId", ""),
+    //     content: _.get(req, "body.content", ""),
+    //     image:bannerImages,
+    //   });
+
+    //   return res.status(200).send({ message: `${name} created successfully with ${banners.length} banners` });
+    // }
   } catch (e) {
     console.log(e);
     return res.status(500).send("Something went wrong while updating banner");
@@ -81,7 +104,14 @@ const updatebanner = async (req, res) => {
 const deletebanner = async (req, res) => {
   try {
     const { id } = req.params;
+    const {image}=req.body
+    console.log(image,"image")
+    
     await banner.findByIdAndDelete(id);
+    image.map(async(res)=>{
+      await helpers.deleteS3File(res);
+    })
+   
     return res.status(200).send("banner deleted");
   } catch (e) {
     return res.status(500).send("Something went wrong while deleting banner");
