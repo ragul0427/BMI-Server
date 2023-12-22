@@ -2,14 +2,6 @@ const mongoose = require("mongoose");
 
 const footerSchema = mongoose.Schema(
   {
-    socialMediaSettings: [
-      {
-        status: Boolean,
-        link: String,
-        image: String,
-        footer_image_key: String,
-      },
-    ],
     name:String,
     logo: String,
     contactNumber:String,

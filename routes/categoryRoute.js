@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../helper/upload");
 const {
   createCategory,
   getCategory,
@@ -10,15 +9,18 @@ const {
   getAllCusinessFilter,
   getFilteredProducts,
 } = require("../controllers/categoryController");
+const uploaders = require('../utils/uploaders')
+
+const {ImageUploader} = uploaders
 
 router
   .post(
     "/createcategory",
-    upload.single("file"),
+    ImageUploader.single("file"),
     createCategory
   )
   .get("/getcategory", getCategory)
-  .put("/updatecategory/:id",upload.single("file"), updateCategory)
+  .put("/updatecategory/:id",ImageUploader.single("file"), updateCategory)
   .delete("/deletecategory/:id", deleteCategory);
 
 // web

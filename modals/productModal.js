@@ -41,9 +41,6 @@ const productSchema=mongoose.Schema({
         type:String,
         required:true
     },
-    product_image_key:{
-        type:String,
-    }
 })
 
 

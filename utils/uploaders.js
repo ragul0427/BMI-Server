@@ -27,7 +27,7 @@ const VideoUploader = multer({
 		return cb(null, false)
 	},
 	limits: {
-		fieldSize: 50 * 1024 * 1024,
+		fieldSize: 40 * 1024 * 1024,
 	},
 	storage: multer.diskStorage({
 		destination: './uploads',
