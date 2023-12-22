@@ -10,6 +10,16 @@ const DeliveryBoySchema = mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		restaurantName: String,
+		restaurantLocation: {
+			type: {
+				type: String,
+				enum: ['Point'],
+			},
+			coordinates: {
+				type: [Number], // [longitude, latitude]
+			},
+		},
 		firstName: String,
 		lastName: String,
 		phone: String,
