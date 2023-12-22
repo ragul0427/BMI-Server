@@ -31,7 +31,7 @@ const createCategory = async (req, res) => {
       return res.status(400).send(`Your Cuisines limit reached. Cannot create more banners.`);
     }
     
-    const result = uploadToCloud(req);
+    const result = uploadToCloud(req,"cuisines");
     s3.upload(result, async (err, data) => {
       const file = req.file;
       if (err) {
@@ -65,7 +65,7 @@ const updateCategory = async (req, res) => {
   try {
     if (get(req, "file", false)) {
       console.log("true", id, req.body);
-      const result = uploadToCloud(req);
+      const result = uploadToCloud(req,"cuisines");
       s3.upload(result, async (err, data) => {
         const file = req.file;
         if (err) {

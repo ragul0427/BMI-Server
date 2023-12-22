@@ -19,7 +19,7 @@ const createSubCategory = async (req, res) => {
     }
     
 
-    const result = uploadToCloud(req);
+    const result = uploadToCloud(req,"subcuisines");
     s3.upload(result, async (err, data) => {
       const file = req.file;
       if (err) {
@@ -61,7 +61,7 @@ const updateSubCategory = async (req, res) => {
   try {
     if (get(req, "file", false)) {
       console.log("true", id, req.body);
-      const result = uploadToCloud(req);
+      const result = uploadToCloud(req,"subcuisines");
       s3.upload(result, async (err, data) => {
         const file = req.file;
         if (err) {
@@ -76,7 +76,7 @@ const updateSubCategory = async (req, res) => {
           image: data.Location,
           subcategory_image_key: data.key,
         });
-        deleteFileInCloud(get(req, "image_key"));
+        deleteFileInCloud(get(req, "body.image_key"));
         return res.status(200).send({ Message: "data updated successfully" });
       });
     } else {

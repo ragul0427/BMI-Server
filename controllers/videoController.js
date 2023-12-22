@@ -9,13 +9,13 @@ const createVideo = async (req, res) => {
     const {name}=req.body
     const videoCount = await video.countDocuments({ name }); 
     let maxVideoLimit =name.toLowerCase().includes("bromag") ? 2 : 3;
-    const result = uploadToCloud(req);
+   
 
     
     if (videoCount >= maxVideoLimit) {
       return res.status(400).send(`Your ${name} video limit reached. Cannot create more videos.`);
     }
-
+    const result = uploadToCloud(req,"videos");
     s3.upload(result, async (err, data) => {
       const file = req.file;
       if (err) {
@@ -51,7 +51,7 @@ const updateVideo = async (req, res) => {
     console.log(req.file)
     if (get(req, "file", false)) {
       console.log("true", id, req.body);
-      const result = uploadToCloud(req);
+      const result = uploadToCloud(req,"videos");
       s3.upload(result, async (err, data) => {
         const file = req.file;
         if (err) {

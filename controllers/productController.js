@@ -35,7 +35,7 @@ const createProduct = async (req, res) => {
     }
   
 
-    const result = uploadToCloud(req);
+    const result = uploadToCloud(req,"menu");
     s3.upload(result, async (err, data) => {
       const file = req.file;
       if (err) {
@@ -77,7 +77,7 @@ const updateProduct = async (req, res) => {
     console.log(req.file,"file")
     if (get(req, "file", false)) {
       console.log("true", id, req.body);
-      const result = uploadToCloud(req);
+      const result = uploadToCloud(req,"menu");
       s3.upload(result, async (err, data) => {
         const file = req.file;
         if (err) {

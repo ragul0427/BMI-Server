@@ -3,14 +3,14 @@ const { v4: uuidv4 } = require("uuid");
 const s3 = require("./s3config");
 const _ = require("lodash");
 
-const uploadToCloud = (req, value = 1) => {
+const uploadToCloud = (req,folderName, value = 1) => {
   try {
     let params;
     if (value === 2) {
       params = _.get(req, "files", []).map((res) => {
         return {
           Bucket: process.env.AWS_BUCKET,
-          Key: uuidv4() + res.originalname,
+          Key: `${folderName}/${uuidv4() + res.originalname}`,
           ACL: "public-read",
           Body: fs.createReadStream(res.path),
         };
@@ -19,7 +19,7 @@ const uploadToCloud = (req, value = 1) => {
       const file = req.file;
       params = {
         Bucket: process.env.AWS_BUCKET,
-        Key: uuidv4() + file.originalname,
+        Key: `${folderName}/${uuidv4() + file.originalname}`,
         ACL: "public-read",
         Body: fs.createReadStream(file.path),
       };
