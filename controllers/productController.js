@@ -117,6 +117,7 @@ const updateProduct = async (req, res) => {
         status: req.body.status,
         offer: req.body.offer,
         price: req.body.price,
+        discountPrice: req.body.discountPrice,
         categoryName: req.body.categoryName,
         subCategoryName: req.body.subCategoryName,
         categoryId: req.body.categoryId,
