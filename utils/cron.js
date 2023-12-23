@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const helpers = require('./helpers');
 
 /*
+CRONTAB TIMINGS
 
 * * * * *
 | | | | |
