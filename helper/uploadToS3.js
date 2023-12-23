@@ -29,10 +29,7 @@ const uploadToCloud = async (req, ...rest) => {
             const params = {
                 Bucket: process.env.AWS_BUCKET,
                 Key: `${folderName}/${
-                    uuidv4().toUpperCase().split("-").join("") +
-                    Date.now() +
-                    "." +
-                    file.mimetype.split("/")[1]
+                    Date.now() + "." + file.mimetype.split("/")[1]
                 }`,
                 ACL: "public-read",
                 Body: fs.createReadStream(file.path),
