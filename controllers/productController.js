@@ -42,7 +42,9 @@ const createProduct = async (req, res) => {
   
     const menu = req.file;
     if (menu) {
-      const path = `Menu/${uuidv4()}/${menu.filename}`;
+      const path = `Menu/${menu.originalname}${Date.now()}/${
+        menu.filename
+      }`;
       await helpers.uploadFile(menu, path);
       if (path) {
         await helpers.deleteS3File(path);
@@ -55,8 +57,6 @@ const createProduct = async (req, res) => {
         discountPrice: req.body.discountPrice,
         offer: req.body.offer,
         price: req.body.price,
-        categoryName: req.body.categoryName,
-        subCategoryName: req.body.subCategoryName,
         categoryId: req.body.categoryId,
         subCategoryId: req.body.subCategoryId,
         image: image
@@ -86,7 +86,9 @@ const updateProduct = async (req, res) => {
     if (get(req, "file", false)) {
       const menu = req.file;
       if (menu) {
-        const path = `SubCuisines/${uuidv4()}/${menu.filename}`;
+        const path = `Menu/${menu.originalname}${Date.now()}/${
+          menu.filename
+        }`;
         await helpers.uploadFile(menu, path);
         if (imageUrl) {
           await helpers.deleteS3File(imageUrl);
@@ -99,8 +101,6 @@ const updateProduct = async (req, res) => {
           discountPrice: req.body.discountPrice,
           offer: req.body.offer,
           price: req.body.price,
-          categoryName: req.body.categoryName,
-          subCategoryName: req.body.subCategoryName,
           categoryId: req.body.categoryId,
           subCategoryId: req.body.subCategoryId,
           image: image
@@ -118,8 +118,6 @@ const updateProduct = async (req, res) => {
         offer: req.body.offer,
         price: req.body.price,
         discountPrice: req.body.discountPrice,
-        categoryName: req.body.categoryName,
-        subCategoryName: req.body.subCategoryName,
         categoryId: req.body.categoryId,
         subCategoryId: req.body.subCategoryId,
         product_image_key: get(req, "body.image_key", ""),

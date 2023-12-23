@@ -9,10 +9,6 @@ const subCategorySchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  categoryName: {
-    type: String,
-    required: true,
-  },
   status:{
     type:Boolean,
     required:true

@@ -30,11 +30,13 @@ const riderVehicelRoute = require("./routes/ridervehicleDetails.route.js");
 const uploadRoute = require("./routes/upload.routes.js");
 const deliveryManOrderStatusRoute = require("./routes/deliveryManOrderStatus.route.js");
 const footerRoute=require("./routes/footer.route.js")
+const socialMediaSettings=require("./routes/socialMediaSettings.js")
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -74,6 +76,7 @@ app.use("/", deliverManOrder);
 app.use("/", riderVehicelRoute);
 app.use("/", deliveryManOrderStatusRoute);
 app.use("/", footerRoute)
+app.use("/", socialMediaSettings)
 app.use("/delivery-boy", require('./routes/delivery-boy.routes.js'))
 
 app.all('*', (req, res) => {

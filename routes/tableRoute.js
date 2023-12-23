@@ -4,12 +4,14 @@ const {
   createTable,getTable,updateTable,deleteTable,
   getAllTables
 } = require("../controllers/tablecontroller");
-const upload = require("../helper/upload");
+const uploaders = require('../utils/uploaders')
+
+const {ImageUploader} = uploaders
 
 router
-  .post("/createtable",upload.single("file"), createTable)
+  .post("/createtable",ImageUploader.single("file"), createTable)
   .get("/gettable", getTable)
-  .put("/updatetable/:id", upload.single("file"),updateTable)
+  .put("/updatetable/:id", ImageUploader.single("file"),updateTable)
   .delete("/deletetable/:id", deleteTable);
 
 // Web

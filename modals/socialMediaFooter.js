@@ -1,22 +1,25 @@
-const mongoose=require("mongoose")
+const mongoose = require("mongoose");
 
-const socailMediaSchema=mongoose.Schema({
-      Link:{
-        type:String,
-        required:true
-      },
-      status:{
-        type:Boolean,
-        required:true
-      },
-      image:{
-        type:String,
-        required:true,
-      },
-      footer_image_key:{
-        type:String,
-        required:true
-      }
-},{timestamps:true})
+const socailMediaSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    link: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: Boolean,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-mongoose.model("socialmedia",socailMediaSchema)
+module.exports = mongoose.model("socialmedia", socailMediaSchema);

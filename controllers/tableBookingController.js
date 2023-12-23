@@ -15,7 +15,7 @@ const createTableBooking = async (req, res) => {
 
 const getTableBooking = async (req, res) => {
   try {
-    const result = await tableBooking.find({});
+    const result = await tableBooking.find({}).sort({ createdAt: -1 });
     return res.status(200).send({ data: result });
   } catch (e) {
     return res

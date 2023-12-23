@@ -1,50 +1,86 @@
-const footer=require("../modals/footerModal")
-const {get,isEmpty}=require("lodash")
-const {
-  uploadToCloud,
-  deleteFileInCloud,
-  deleteFileInLocal,
-} = require("../helper/uploadToS3");
-const s3 = require("../helper/s3config");
+const footer = require("../modals/footerModal");
+const { get } = require("lodash");
+const helpers = require("../utils/helpers");
 
-const createFooter=async(req,res)=>{
-  try{
-    const isFooter=await footer.find({})
-    // console.log(isFooter._id)
+const createFooter = async (req, res) => {
+  try {
+    const isFooter = await footer.find({});
 
-    // if(!isEmpty(isFooter)){
-     
-    // }
-    const result = uploadToCloud(req);
-    s3.upload(result, async (err, data) => {
-      const file = req.file;
-      if (err) {
-        return res.status(500).send(err);
+    if (isFooter.length === 0) {
+      console.log("true");
+      const logo = req.file;
+      if (logo) {
+        const path = `Footer/Logo${Date.now()}/${logo.filename}`;
+
+        await helpers.uploadFile(logo, path);
+        if (path) {
+          await helpers.deleteS3File(path);
+        }
+        const image = helpers.getS3FileUrl(path);
+        helpers.deleteFile(logo);
+        await footer.create({
+          name: get(req, "body.name"),
+          email: get(req, "body.email"),
+          contactNumber: get(req, "body.number"),
+          address: get(req, "body.address"),
+          logo: image,
+          colors:get(isFooter,"[0].colors")
+          
+        });
+
+        return res.status(200).send({ message: "Footer created successfully" });
       }
-      deleteFileInLocal(file);
-      await footer.create({
-        name: get(req,"body.name"),
-        email: get(req,"body.email"),
-        contactNumber: get(req,"body.number"),
-        address: get(req,"body.address"),
-        logo: data.Location,
-        logo_image_key: data.key,
-      });
-      return res.status(200).send({ url: data.Location });
-    });
-   
-  }catch(err){
-console.log(err)
-  }
-}
+    } else {
+      
+      const logo = req.file;
+      if (logo) {
+        const path = `Footer/Logo${Date.now()}/${logo.filename}`;
+        await helpers.uploadFile(logo, path);
+        if (path) {
+          await helpers.deleteS3File(isFooter[0].logo);
+        }
+       
+        const image = helpers.getS3FileUrl(path);
+        helpers.deleteFile(logo);
+        await footer.findByIdAndUpdate(isFooter[0]._id, {
+          name: get(req, "body.name"),
+          email: get(req, "body.email"),
+          contactNumber: get(req, "body.number"),
+          address: get(req, "body.address"),
+          logo: image,
+          colors:get(isFooter,"[0].colors")
+        });
 
-const getFooter=async(req,res)=>{
-  try{
-    const result=await footer.find({})
-    return res.status(200).send({ data:result });
-  }catch(err){
-    console.log(err)
-  }
-}
+        return res.status(200).send({ message: "Footer Updated successfully" });
+      } else {
+        console.log("false",get(req, "body.colors"));
+        await footer.findByIdAndUpdate(isFooter[0]._id, {
+          name: get(req, "body.name"),
+          email: get(req, "body.email"),
+          contactNumber: get(req, "body.number"),
+          address: get(req, "body.address"),
+          logo: isFooter.logo,
+          colors: get(req, "body.colors") === undefined
+          ? get(isFooter, "[0].colors")
+          : get(req, "body.colors"),
+          content:get(req,"body.content"),
+        });
 
-module.exports={createFooter,getFooter}
+        return res.status(200).send({ message: "Footer Updated successfully" });
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getFooter = async (req, res) => {
+  try {
+    const result = await footer.find({});
+    return res.status(200).send({ data: result });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+module.exports = { createFooter, getFooter };

@@ -2,12 +2,18 @@ const mongoose = require("mongoose");
 
 const footerSchema = mongoose.Schema(
   {
-    name:String,
+    name: String,
     logo: String,
-    contactNumber:String,
-    address:String,
+    contactNumber: String,
+    address: String,
     email: String,
-    logo_image_key:String
+    colors: {
+      primaryColor: String,
+      secondaryColor: String,
+      thirdColor: String,
+      fourthColor: String,
+    },
+    content:String,
   },
   { timestamps: true }
 );

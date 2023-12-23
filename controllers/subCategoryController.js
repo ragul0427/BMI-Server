@@ -15,7 +15,9 @@ const createSubCategory = async (req, res) => {
 
     const subCuisinePhto = req.file;
     if (subCuisinePhto) {
-      const path = `SubCuisines/${uuidv4()}/${subCuisinePhto.filename}`;
+      const path = `SubCuisines/${subCuisinePhto.originalname}${Date.now()}/${
+        subCuisinePhto.filename
+      }`;
       await helpers.uploadFile(subCuisinePhto, path);
       if (path) {
         await helpers.deleteS3File(path);
@@ -25,7 +27,6 @@ const createSubCategory = async (req, res) => {
       await subCategory.create({
         name:get(req.body, 'name', ''),
         status:get(req.body, 'status', ''),
-        categoryName:get(req.body, 'categoryName', ''),
         categoryId:get(req.body, 'categoryId', ''),
         image:image,
        
@@ -60,7 +61,9 @@ const updateSubCategory = async (req, res) => {
     if (get(req, "file", false)) {
       const subCuisinePhto = req.file;
       if (subCuisinePhto) {
-        const path = `SubCuisines/${uuidv4()}/${subCuisinePhto.filename}`;
+        const path = `SubCuisines/${subCuisinePhto.originalname}${Date.now()}/${
+          subCuisinePhto.filename
+        }`;
         await helpers.uploadFile(subCuisinePhto, path);
         if (imageUrl) {
           await helpers.deleteS3File(imageUrl);
@@ -70,7 +73,6 @@ const updateSubCategory = async (req, res) => {
         await subCategory.findByIdAndUpdate(id,{
           name:get(req.body, 'name', ''),
           status:get(req.body, 'status', ''),
-          categoryName:get(req.body, 'categoryName', ''),
           categoryId:get(req.body, 'categoryId', ''),
           image:image,
         })  
@@ -83,7 +85,6 @@ const updateSubCategory = async (req, res) => {
       await subCategory.findByIdAndUpdate(id, {
         name: get(req, "body.name", ""),
         status: get(req, "body.status", ""),
-        categoryName: get(req.body, "categoryName", ""),
         categoryId: get(req.body, "categoryId", ""),
         image: get(req, "body.image", ""),
       });

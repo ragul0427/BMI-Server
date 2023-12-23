@@ -33,7 +33,9 @@ const createCategory = async (req, res) => {
     const cuisinePhto = req.file;
     
     if (cuisinePhto) {
-      const path = `Cuisines/${uuidv4()}/${cuisinePhto.filename}`;
+      const path = `Cuisines/${cuisinePhto.originalname}${Date.now()}/${
+        cuisinePhto.filename
+      }`;
       await helpers.uploadFile(cuisinePhto, path);
       if (path) {
         await helpers.deleteS3File(path);
@@ -70,7 +72,9 @@ const updateCategory = async (req, res) => {
     if (get(req, "file", false)) {
       const cuisinePhto = req.file;
       if (cuisinePhto) {
-        const path = `Cuisines/${uuidv4()}/${cuisinePhto.filename}`;
+        const path = `Cuisines/${cuisinePhto.originalname}${Date.now()}/${
+          cuisinePhto.filename
+        }`;
         await helpers.uploadFile(cuisinePhto, path);
         if (imageUrl) {
           await helpers.deleteS3File(imageUrl);
