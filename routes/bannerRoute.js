@@ -9,12 +9,22 @@ const {
   updateAdvertisementBanner,
 } = require("../controllers/bannerController");
 const { webTokenMiddleware } = require("../middleWare/webMiddleware");
-const upload = require("../helper/upload");
+const uploaders = require('../utils/uploaders')
+
+const {ImageUploader} = uploaders
 
 router
-  .post("/createbanner",upload.array("images"), createbanner)
+  .post("/createbanner",ImageUploader.fields([
+    {
+      name:"banner",maxCount:5
+    }
+  ]), createbanner)
   .get("/getbanner", getbanner)
-  .put("/updatebanner/:id",upload.array("images"), updatebanner)
+  .put("/updatebanner/:id",ImageUploader.fields([
+    {
+      name:"banner",maxCount:5
+    }
+  ]), updatebanner)
   .delete("/deletebanner/:id", deletebanner);
 
 // APK
