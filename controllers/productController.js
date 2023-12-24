@@ -15,9 +15,10 @@ const createProduct = async (req, res) => {
     try {
       let maximumCuisines=500
       let totalMenu=50
-      const {categoryName}=req.body;
+      const {categoryName,categoryId}=req.body;
       const {name}=req.body;
-      const isCount=await product.countDocuments({categoryName})
+      const isCount=await product.find({categoryId})
+      console.log(isCount.length)
       const totalMenuCount=await product.countDocuments({})
       
       const existingMenu = await product.aggregate([
@@ -32,7 +33,7 @@ const createProduct = async (req, res) => {
         return res.status(400).send(`Menu with the name '${name}' already exists .`);
       }
   
-      if (isCount >= totalMenu) {
+      if (isCount.length >= totalMenu) {
         return res.status(400).send(`Your ${categoryName} Menu limit reached. Cannot create more ${categoryName}.`);
       }
   
@@ -59,6 +60,8 @@ const createProduct = async (req, res) => {
           price: req.body.price,
           categoryId: req.body.categoryId,
           subCategoryId: req.body.subCategoryId,
+          categoryName: req.body.categoryName,
+          subCategoryName:req.body.subCategoryName,
           image: image
         });
         console.log(result,"result")  
@@ -105,6 +108,8 @@ const updateProduct = async (req, res) => {
             price: req.body.price,
             categoryId: req.body.categoryId,
             subCategoryId: req.body.subCategoryId,
+            categoryName: req.body.categoryName,
+            subCategoryName:req.body.subCategoryName,
             image: image
           })  
   
@@ -122,6 +127,8 @@ const updateProduct = async (req, res) => {
           discountPrice: req.body.discountPrice,
           categoryId: req.body.categoryId,
           subCategoryId: req.body.subCategoryId,
+          categoryName: req.body.categoryName,
+          subCategoryName:req.body.subCategoryName,
           image: get(req, "body.image", ""),
         });
         return res.status(200).send({ Message: "created successfully" });

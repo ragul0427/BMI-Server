@@ -1,15 +1,13 @@
 const subCategory = require("../modals/subCategoryModal");
 const { get } = require("lodash");
 const helpers = require("../utils/helpers");
-const { v4: uuidv4 } = require("uuid");
 
 const createSubCategory = async (req, res) => {
   try {
     const maximumCount=10
-    const {categoryName}=req.body;
-    const subCategoryCount=await subCategory.countDocuments({categoryName})
-
-    if (subCategoryCount >= maximumCount) {
+    const {categoryName,categoryId}=req.body;
+    const subCategoryCount=await subCategory.find({categoryId})
+    if (subCategoryCount.length >= maximumCount) {
       return res.status(400).send(`Your ${categoryName} limit reached. Cannot create more ${categoryName}.`);
     }
 
@@ -28,6 +26,7 @@ const createSubCategory = async (req, res) => {
         name:get(req.body, 'name', ''),
         status:get(req.body, 'status', ''),
         categoryId:get(req.body, 'categoryId', ''),
+        categoryName:get(req.body, 'categoryName', ''),
         image:image,
        
       });
@@ -35,6 +34,7 @@ const createSubCategory = async (req, res) => {
      
     }
   } catch (err) {
+    console.log(err,"err")
     return res
       .status(500)
       .send("Something went wrong while creating subcategory");
@@ -74,6 +74,7 @@ const updateSubCategory = async (req, res) => {
           name:get(req.body, 'name', ''),
           status:get(req.body, 'status', ''),
           categoryId:get(req.body, 'categoryId', ''),
+          categoryName:get(req.body, 'categoryName', ''),
           image:image,
         })  
 
@@ -86,6 +87,7 @@ const updateSubCategory = async (req, res) => {
         name: get(req, "body.name", ""),
         status: get(req, "body.status", ""),
         categoryId: get(req.body, "categoryId", ""),
+        categoryName:get(req.body, 'categoryName', ''),
         image: get(req, "body.image", ""),
       });
       return res.status(200).send({ Message: "subcuisine updated successfully" });

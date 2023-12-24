@@ -33,6 +33,14 @@ const productSchema=mongoose.Schema({
         type:String,
         required:true
     },
+    categoryName:{
+        type:String,
+        required:true
+    },
+    subCategoryName:{
+        type:String,
+        required:true
+    }
     
 })
 
