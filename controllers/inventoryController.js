@@ -49,6 +49,8 @@ const updateInventory = async (req, res) => {
   try {
     const imageUrl=req.body.image
     const billPhoto = req.file;
+    const data = await inventory.findOne({ _id: id });
+    console.log(data.image,"image")
 
     if (billPhoto) {
       const path = `InventoryBills/${billPhoto.originalname}${Date.now()}/${
@@ -76,7 +78,7 @@ const updateInventory = async (req, res) => {
       await inventory.findByIdAndUpdate(id, {
         productName: req.body.productName,
         category: req.body.category,
-        image: req.body.image,
+        image: data.image,
         provided: req.body.provided,
         consumed: req.body.consumed,
         available: req.body.available,
@@ -86,6 +88,7 @@ const updateInventory = async (req, res) => {
     .status(200)
     .send({ message: "Inventory updated successfully" });
   } catch (e) {
+    console.log(e)
     return res
       .status(500)
       .send("Something went wrong while updating inventory");
@@ -101,6 +104,7 @@ const deleteInventory = async (req, res) => {
 
     return res.status(200).send("Category deleted");
   } catch (e) {
+    console.log(e,"err")
     return res
       .status(500)
       .send("Something went wrong while deleting inventory");
