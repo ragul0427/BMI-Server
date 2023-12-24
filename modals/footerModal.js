@@ -14,7 +14,9 @@ const footerSchema = mongoose.Schema(
       fourthColor: String,
     },
     content:String,
+    status:Boolean,
   },
+  
   { timestamps: true }
 );
 

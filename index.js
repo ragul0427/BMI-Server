@@ -31,6 +31,7 @@ const uploadRoute = require("./routes/upload.routes.js");
 const deliveryManOrderStatusRoute = require("./routes/deliveryManOrderStatus.route.js");
 const footerRoute=require("./routes/footer.route.js")
 const socialMediaSettings=require("./routes/socialMediaSettings.js")
+const restaurantStatusRoute=require("./routes/restaurantStatusRoute.js")
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -76,6 +77,7 @@ app.use("/", deliverManProfile);
 app.use("/", deliverManOrder);
 app.use("/", riderVehicelRoute);
 app.use("/", deliveryManOrderStatusRoute);
+app.use("/", restaurantStatusRoute);
 app.use("/", footerRoute)
 app.use("/", socialMediaSettings)
 app.use("/delivery-boy", require('./routes/delivery-boy.routes.js'))

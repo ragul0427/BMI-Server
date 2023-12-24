@@ -72,11 +72,13 @@ const updateTable = async (req, res) => {
         return res.status(200).send({ message: "Table updated successfully" });
       }
     } else {
-      await Table.findByIdAndUpdate(id, {
-        seatsAvailable: req.body.seatsAvailable,
-        tableNo: req.body.tableNo,
-        image: imageUrl,
-      });
+      console.log(req.body.status)
+      // await Table.findByIdAndUpdate(id, {
+      //   seatsAvailable: req.body.seatsAvailable,
+      //   tableNo: req.body.tableNo,
+      //   image: imageUrl,
+      //   status:req.body.status,
+      // });
       return res.status(200).send({ Message: "Table updated successfully" });
     }
   } catch (err) {

@@ -3,7 +3,6 @@ const category = require("../modals/categoryModal");
 const subCategory = require("../modals/subCategoryModal");
 const Product = require("../modals/productModal");
 const helpers = require("../utils/helpers");
-const { v4: uuidv4 } = require("uuid");
 
 const createCategory = async (req, res) => {
     try {

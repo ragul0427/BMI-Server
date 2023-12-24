@@ -9,7 +9,7 @@ const inventorySchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  arrivalDate: {
+  image: {
     type: String,
     required: true,
   },
