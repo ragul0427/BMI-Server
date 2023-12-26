@@ -23,7 +23,7 @@ const createSocialMedia = async (req, res) => {
         image: image,
       });
 
-      return res.status(200).send({ message: "Footer created successfully" });
+      return res.status(200).send({ message: "Social media  created successfully" });
     }
   } catch (err) {
     console.log(err);
@@ -43,14 +43,16 @@ const updateSocialMedia = async (req, res) => {
   const {id}=req.params
   try{
     const imageUrl=req.body.image
+   
     if (get(req, "file", false)) {
       const socialMedia = req.file;
+     
       if (socialMedia) {
         const path = `SocialMedia/${get(req, "body.name")}${Date.now()}/${
           socialMedia.filename
         }`;
         await helpers.uploadFile(socialMedia, path);
-        if (path) {
+        if (imageUrl) {
           await helpers.deleteS3File(imageUrl);
         }
         const image = helpers.getS3FileUrl(path);
@@ -62,17 +64,18 @@ const updateSocialMedia = async (req, res) => {
           image: image,
         });
   
-        return res.status(200).send({ message: "Footer created successfully" });
+       
+        return res.status(200).send({ message: "Social media updated successfully" });
       }
     } else {
-      console.log("false");
+   
       await social.findByIdAndUpdate(id, {
         name: get(req, "body.name"),
           status: get(req, "body.status"),
           link: get(req, "body.link"),
         image: get(req, "body.image", ""),
       });
-      return res.status(200).send({ Message: "Cusines updated successfully" });
+      return res.status(200).send({ Message: "Social media  updated successfully" });
     }
   }catch(err){
     
@@ -85,7 +88,7 @@ const deleteSocialMedia = async (req, res) => {
     const { image } = req.body;
     await social.findByIdAndDelete(id);
     await helpers.deleteS3File(image);
-    return res.status(200).send("Category deleted");
+    return res.status(200).send("Social media  deleted");
   } catch (e) {
     return res.status(500).send("Something went wrong while deleting category");
   }

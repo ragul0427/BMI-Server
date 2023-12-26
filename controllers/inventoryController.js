@@ -3,7 +3,7 @@ const helpers = require("../utils/helpers");
 
 const createInventory = async (req, res) => {
   try {
-    console.log(req.file, req.body);
+ 
 
     const billPhoto = req.file;
 
@@ -50,7 +50,7 @@ const updateInventory = async (req, res) => {
     const imageUrl=req.body.image
     const billPhoto = req.file;
     const data = await inventory.findOne({ _id: id });
-    console.log(data.image,"image")
+   
 
     if (billPhoto) {
       const path = `InventoryBills/${billPhoto.originalname}${Date.now()}/${
@@ -98,7 +98,6 @@ const deleteInventory = async (req, res) => {
   try {
     const { id } = req.params;
     const { image } = req.body;
-    console.log(image);
     await inventory.findByIdAndDelete(id);
     await helpers.deleteS3File(image);
 

@@ -72,7 +72,7 @@ const updateVideo = async (req, res) => {
           .send({ message: "Cusines updated successfully" });
       }
     } else {
-      console.log("false");
+  
       await video.findByIdAndUpdate(id, {
         name: req.body.name,
         video: req.body.video_key,

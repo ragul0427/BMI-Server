@@ -7,7 +7,7 @@ const createFooter = async (req, res) => {
     const isFooter = await footer.find({});
 
     if (isFooter.length === 0) {
-      console.log("true");
+      
       const logo = req.file;
       if (logo) {
         const path = `Footer/Logo${Date.now()}/${logo.filename}`;
@@ -53,7 +53,7 @@ const createFooter = async (req, res) => {
 
         return res.status(200).send({ message: "Footer Updated successfully" });
       } else {
-        console.log("false",get(req, "body.colors"));
+       
         await footer.findByIdAndUpdate(isFooter[0]._id, {
           name: get(req, "body.name"),
           email: get(req, "body.email"),

@@ -80,7 +80,7 @@ const updatebanner = async (req, res) => {
     const banners = req.files?.banner ?? [];
     const { image } = req.body;
     if (banners.length > 0) {
-      console.log("treu")
+
       const uploadedImagePaths = [];
 
       for (const bannerFile of banners) {
@@ -115,7 +115,7 @@ const updatebanner = async (req, res) => {
           message: `${name} updated successfully with ${banners.length} banners`,
         });
     }else{
-      console.log("false")
+
       await banner.findByIdAndUpdate(id,{
         name: _.get(req, "body.name"),
         productId: _.get(req, "body.productId", ""),
@@ -138,7 +138,7 @@ const deletebanner = async (req, res) => {
   try {
     const { id } = req.params;
     const { image } = req.body;
-    console.log(image, "image");
+  
 
     await banner.findByIdAndDelete(id);
     image.map(async (res) => {

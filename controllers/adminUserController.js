@@ -35,4 +35,56 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { getUser, createUser };
+const getAllUser = async (req, res) => {
+  try {
+    const result = await Admin.find({});
+    return res.status(200).send({ data: result });
+  } catch (e) {
+    return res
+      .status(500)
+      .send("Something went wrong while fetching admins");
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Admin.findByIdAndDelete(id);
+    return res.status(200).send("Admin deleted");
+  } catch (e) {
+    console.log(e,"err")
+    return res
+      .status(500)
+      .send("Something went wrong while deleting admin");
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).send("Password is required for update");
+    }
+
+    const updatedAdmin = await Admin.findByIdAndUpdate(
+      id,
+      { password },
+      { new: true }
+    );
+
+    if (!updatedAdmin) {
+      return res.status(404).send("Admin not found");
+    }
+
+    return res.status(200).json({ message: "Admin updated successfully", updatedAdmin });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .send("Something went wrong while updating admin");
+  }
+};
+
+module.exports = { getUser, createUser, getAllUser,deleteUser,updateUser };

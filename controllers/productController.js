@@ -1,14 +1,6 @@
 const product = require("../modals/productModal");
 const Cart = require("../modals/cart.models.js");
-const {
-    uploadToCloud,
-    deleteFileInCloud,
-    deleteFileInLocal,
-} = require("../helper/uploadToS3");
-const s3 = require("../helper/s3config");
-const fs = require("fs");
 const { isEmpty, get } = require("lodash");
-const { v4: uuidv4 } = require("uuid");
 const helpers = require("../utils/helpers");
 
 const createProduct = async (req, res) => {
@@ -18,7 +10,6 @@ const createProduct = async (req, res) => {
       const {categoryName,categoryId}=req.body;
       const {name}=req.body;
       const isCount=await product.find({categoryId})
-      console.log(isCount.length)
       const totalMenuCount=await product.countDocuments({})
       
       const existingMenu = await product.aggregate([
@@ -64,7 +55,7 @@ const createProduct = async (req, res) => {
           subCategoryName:req.body.subCategoryName,
           image: image
         });
-        console.log(result,"result")  
+      
         return res.status(200).send({message:"Menu created successfully"});
        
       }
@@ -118,7 +109,7 @@ const updateProduct = async (req, res) => {
             .send({ message: "Cusines updated successfully" });
         }
       } else {
-        console.log("false");
+      
         await product.findByIdAndUpdate(id, {
           name: req.body.name,
           status: req.body.status,
@@ -145,7 +136,7 @@ const deleteProduct = async (req, res) => {
         const { image } = req.body;
         await product.findByIdAndDelete(id);
         await helpers.deleteS3File(image);
-        return res.status(200).send("Category deleted");
+        return res.status(200).send("Menu deleted");
     } catch (e) {
         return res
             .status(500)

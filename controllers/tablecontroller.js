@@ -1,10 +1,4 @@
 const Table = require("../modals/table");
-const {
-  uploadToCloud,
-  deleteFileInLocal,
-  deleteFileInCloud,
-} = require("../helper/uploadToS3");
-const s3 = require("../helper/s3config");
 const { get } = require("lodash");
 const helpers = require("../utils/helpers");
 
@@ -48,7 +42,7 @@ const getTable = async (req, res) => {
 const updateTable = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(req.file, "file");
+  
     const imageUrl = req.body.image;
     if (get(req, "file", false)) {
       const tablePhto = req.file;
@@ -72,13 +66,12 @@ const updateTable = async (req, res) => {
         return res.status(200).send({ message: "Table updated successfully" });
       }
     } else {
-      console.log(req.body.status)
-      // await Table.findByIdAndUpdate(id, {
-      //   seatsAvailable: req.body.seatsAvailable,
-      //   tableNo: req.body.tableNo,
-      //   image: imageUrl,
-      //   status:req.body.status,
-      // });
+      await Table.findByIdAndUpdate(id, {
+        seatsAvailable: req.body.seatsAvailable,
+        tableNo: req.body.tableNo,
+        image: imageUrl,
+      
+      });
       return res.status(200).send({ Message: "Table updated successfully" });
     }
   } catch (err) {
@@ -93,7 +86,6 @@ const deleteTable = async (req, res) => {
     const { image } = req.body;
     await Table.findByIdAndDelete(id);
     await helpers.deleteS3File(image);
-    deleteFileInCloud(get(req.body, "image"));
     return res.status(200).send("table deleted");
   } catch (err) {
     return res.status(500).send("Something went wrong while deleting table");
